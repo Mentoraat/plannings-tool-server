@@ -4,10 +4,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Singleton;
+import com.hanabi.api.models.Color;
 import com.hanabi.api.models.Game;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by tim on 8-7-15.
@@ -15,6 +17,8 @@ import java.util.Map;
 @Singleton
 public class GameBackend {
 
+    public static final int NUMBER_OF_CARDS_PER_PLAYER = 4;
+    private static final int NUMBER_OF_PLAYERS_PER_GAME = 4;
     private final Map<Integer, GameInstance> games;
 
     private int lastGameId;
@@ -32,6 +36,10 @@ public class GameBackend {
         game.setId(id);
 
         instance.setEncapsulatable(game);
+
+        for (int i = 0; i < NUMBER_OF_PLAYERS_PER_GAME; i++) {
+            this.addPlayerToInstance(instance);
+        }
 
         games.put(id, instance);
 
@@ -51,11 +59,20 @@ public class GameBackend {
     public GameInstance addPlayer(int id) {
         GameInstance instance = this.getInstance(id);
 
+        addPlayerToInstance(instance);
+
+        return instance;
+    }
+
+    private void addPlayerToInstance(GameInstance instance) {
         PlayerInstance player = new PlayerInstance();
+
+        for (int i = 0; i < NUMBER_OF_CARDS_PER_PLAYER; i++) {
+            player.addCard(Color.BLUE, new Random().nextInt(NUMBER_OF_CARDS_PER_PLAYER));
+        }
+
         player.setId(instance.getNextPlayerId());
 
         instance.addPlayer(player);
-
-        return instance;
     }
 }

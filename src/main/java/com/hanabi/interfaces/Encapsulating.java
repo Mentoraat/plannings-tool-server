@@ -12,4 +12,6 @@ public abstract class Encapsulating<E extends Encapsulatable> {
     @Setter
     private E encapsulatable;
 
+    public abstract E transform();
+
 }

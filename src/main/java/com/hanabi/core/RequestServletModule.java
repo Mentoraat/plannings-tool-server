@@ -26,7 +26,7 @@ public class RequestServletModule extends ServletModule {
     private void bindAPI() {
         this.bindClassesAnnotatedWithInPackage("com.hanabi.api", Path.class);
         this.bindClassesAnnotatedWithInPackage("com.hanabi.core.mappers", Provider.class);
-//        this.bindClassesAnnotatedWithInPackage("com.hanabi.api.filters", Provider.class);
+        this.bindClassesAnnotatedWithInPackage("com.hanabi.api.filters", Provider.class);
     }
 
     private void bindClassesAnnotatedWithInPackage(final String packageName,
