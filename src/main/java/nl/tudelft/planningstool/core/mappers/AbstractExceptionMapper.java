@@ -1,4 +1,4 @@
-package com.hanabi.core.mappers;
+package nl.tudelft.planningstool.core.mappers;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package com.hanabi.core.mappers;
+package nl.tudelft.planningstool.core.mappers;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 

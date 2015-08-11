@@ -1,4 +1,4 @@
-package com.hanabi.core;
+package nl.tudelft.planningstool.core;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.servlet.ServletModule;
@@ -24,9 +24,9 @@ public class RequestServletModule extends ServletModule {
     }
 
     private void bindAPI() {
-        this.bindClassesAnnotatedWithInPackage("com.hanabi.api", Path.class);
-        this.bindClassesAnnotatedWithInPackage("com.hanabi.core.mappers", Provider.class);
-        this.bindClassesAnnotatedWithInPackage("com.hanabi.api.filters", Provider.class);
+        this.bindClassesAnnotatedWithInPackage("nl.tudelft.planningstool.api", Path.class);
+        this.bindClassesAnnotatedWithInPackage("nl.tudelft.planningstool.core.mappers", Provider.class);
+        this.bindClassesAnnotatedWithInPackage("nl.tudelft.planningstool.api.filters", Provider.class);
     }
 
     private void bindClassesAnnotatedWithInPackage(final String packageName,

@@ -1,8 +1,6 @@
-package com.hanabi.core;
+package nl.tudelft.planningstool.core;
 
-import com.google.common.collect.ImmutableList;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.session.HashSessionIdManager;

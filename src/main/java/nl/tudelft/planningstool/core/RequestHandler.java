@@ -1,4 +1,4 @@
-package com.hanabi.core;
+package nl.tudelft.planningstool.core;
 
 import com.google.common.collect.ImmutableList;
 import com.google.inject.Injector;
@@ -6,14 +6,12 @@ import com.google.inject.Module;
 import com.google.inject.servlet.GuiceFilter;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
-import org.eclipse.jetty.util.component.Container;
 import org.jboss.resteasy.plugins.guice.GuiceResteasyBootstrapServletContextListener;
 import org.jboss.resteasy.plugins.server.servlet.HttpServletDispatcher;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 import java.util.EnumSet;
-import java.util.EventListener;
 import java.util.List;
 
 /**
