@@ -6,9 +6,6 @@ import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-/**
- * Created by tim on 8-7-15.
- */
 @Slf4j
 public class App {
 

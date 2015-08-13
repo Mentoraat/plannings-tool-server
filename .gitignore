@@ -1,3 +1,6 @@
 .idea
 *.iml
 target/
+
+# Left over from testing
+*.db
