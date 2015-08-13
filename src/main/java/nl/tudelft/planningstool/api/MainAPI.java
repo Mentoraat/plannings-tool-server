@@ -34,6 +34,8 @@ public class MainAPI {
     @GET
     @Path("get")
     public User get() {
-        return this.userDAO.getFromId(1);
+        User user = this.userDAO.getFromId(1);
+        user.checkAdmin();
+        return user;
     }
 }

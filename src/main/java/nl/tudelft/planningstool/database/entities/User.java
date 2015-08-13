@@ -1,13 +1,8 @@
 package nl.tudelft.planningstool.database.entities;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.ws.rs.ForbiddenException;
+import javax.ws.rs.NotAuthorizedException;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(of = {
         "id"
 })
-public class User {
+public class User implements AdminVerifiable {
 
     /**
      * The unique id of the user.
@@ -49,5 +44,31 @@ public class User {
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "access_token", nullable = true)
     private String accessToken;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "adminStatus")
+    private AdminStatus adminStatus = AdminStatus.USER;
+
+    @Override
+    public void checkAdmin() throws ForbiddenException {
+        this.adminStatus.checkAdmin();
+    }
+
+    enum AdminStatus implements AdminVerifiable {
+
+        ADMIN {
+            @Override
+            public void checkAdmin() throws ForbiddenException {
+
+            }
+        },
+        USER {
+            @Override
+            public void checkAdmin() throws ForbiddenException {
+                throw new ForbiddenException();
+            }
+        };
+
+    }
 
 }
