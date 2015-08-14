@@ -2,10 +2,12 @@ package nl.tudelft.planningstool.database.entities;
 
 import javax.persistence.*;
 import javax.ws.rs.ForbiddenException;
-import javax.ws.rs.NotAuthorizedException;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
+
+import java.util.Set;
 
 @Data
 @Entity
@@ -37,13 +39,12 @@ public class User implements AdminVerifiable {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    /**
-     * SoundCloud OAuth access token.
-     * See: https://developers.soundcloud.com/docs/api/reference#token
-     */
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "access_token", nullable = true)
     private String accessToken;
+
+    @OneToMany(mappedBy = "user")
+    private Set<CourseRelation> courses;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "adminStatus")
