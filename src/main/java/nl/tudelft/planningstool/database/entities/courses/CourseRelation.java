@@ -17,7 +17,10 @@ public class CourseRelation implements Serializable {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "course")
+    @JoinColumns({
+            @JoinColumn(name = "courseId"),
+            @JoinColumn(name = "year")
+    })
     private Course course;
 
     @Id

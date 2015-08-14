@@ -11,16 +11,11 @@ import java.util.Set;
 @Entity
 @Table(name = "courses")
 @EqualsAndHashCode(of = {
-        "id"
+        "edition"
 })
 public class Course {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private int id;
-
-    @Embedded
+    @EmbeddedId
     private CourseEdition edition;
 
     @OneToMany(mappedBy = "course")

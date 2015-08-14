@@ -21,7 +21,10 @@ public class Assignment {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "course")
+    @JoinColumns({
+            @JoinColumn(name = "courseId"),
+            @JoinColumn(name = "year")
+    })
     private Course course;
 
     @Column(name = "name", nullable = false)

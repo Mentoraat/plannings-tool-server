@@ -4,10 +4,11 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Data
 @Embeddable
-public class CourseEdition {
+public class CourseEdition implements Serializable {
 
     @Column(name = "courseId", nullable = false)
     private String courseId;
