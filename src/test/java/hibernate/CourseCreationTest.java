@@ -18,16 +18,7 @@ import javax.persistence.EntityExistsException;
 
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(JukitoRunner.class)
-@UseModules(DatabaseTestModule.class)
-public class CourseCreationTest {
-
-    @Rule
-    @Inject
-    public BootstrapRule bootstrapRule;
-
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
+public class CourseCreationTest extends EntityCreationTestBase {
 
     @Inject
     private CourseDAO courseDAO;

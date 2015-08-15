@@ -18,7 +18,11 @@ public class Occurence implements Serializable {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "assignment")
+    @JoinColumns({
+            @JoinColumn(name = "id"),
+            @JoinColumn(name = "courseId"),
+            @JoinColumn(name = "year")
+    })
     private Assignment assignment;
 
     @Id

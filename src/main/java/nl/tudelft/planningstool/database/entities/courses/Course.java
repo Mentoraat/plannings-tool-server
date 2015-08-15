@@ -3,6 +3,7 @@ package nl.tudelft.planningstool.database.entities.courses;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 
 import javax.persistence.*;
@@ -11,9 +12,8 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "courses")
-@EqualsAndHashCode(of = {
-        "edition"
-})
+@EqualsAndHashCode(of = "edition")
+@ToString(of = "edition")
 public class Course {
 
     @EmbeddedId
@@ -22,7 +22,7 @@ public class Course {
     @OneToMany(mappedBy = "course")
     private Set<CourseRelation> users = Sets.newHashSet();
 
-    @OneToMany(mappedBy = "course")
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Set<Assignment> assignments = Sets.newHashSet();
 
     @Column(name = "examTime")

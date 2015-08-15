@@ -2,34 +2,18 @@ package hibernate;
 
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
-import nl.tudelft.planningstool.database.DatabaseTestModule;
-import nl.tudelft.planningstool.database.bootstrapper.BootstrapRule;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jukito.JukitoRunner;
-import org.jukito.UseModules;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-@RunWith(JukitoRunner.class)
-@UseModules(DatabaseTestModule.class)
-public class UserCreationTest {
-
-    @Rule
-    @Inject
-    public BootstrapRule bootstrapRule;
-
-    @Rule
-    public ExpectedException expected = ExpectedException.none();
+public class UserCreationTest extends EntityCreationTestBase {
 
     @Inject
     private UserDAO userDAO;
