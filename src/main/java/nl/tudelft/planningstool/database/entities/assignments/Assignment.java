@@ -14,7 +14,9 @@ import javax.persistence.*;
 })
 public class Assignment {
 
-    private static final long DEFAULT_DEADLINE = -1L;
+    public static final long DEFAULT_DEADLINE = -1L;
+
+    public static final int DEFAULT_LENGTH = 2;
 
     @Id
     @Column(name = "id", nullable = false)
@@ -31,7 +33,7 @@ public class Assignment {
     private String name;
 
     @Column(name = "length", nullable = false)
-    private double length = 2.0;
+    private double length = DEFAULT_LENGTH;
 
     @Column(name = "deadline")
     private long deadline = DEFAULT_DEADLINE;

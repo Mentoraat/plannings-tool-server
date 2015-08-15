@@ -1,0 +1,13 @@
+{
+  "courses" : [
+    {
+      "edition" : {
+        "courseId" : "TI1405",
+        "year" : 2015
+      },
+      "assignments" : [],
+      "users" : [],
+      "examTime" : 1337
+    }
+  ]
+}
