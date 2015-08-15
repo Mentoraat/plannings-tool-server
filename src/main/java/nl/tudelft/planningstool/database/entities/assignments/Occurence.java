@@ -13,6 +13,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = {
         "assignment", "user"
 })
+@IdClass(Occurence.OccurenceId.class)
 public class Occurence implements Serializable {
 
     @Id
@@ -24,4 +25,13 @@ public class Occurence implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user")
     private User user;
+
+    @Data
+    static class OccurenceId implements Serializable {
+
+        private Assignment assignment;
+
+        private User user;
+
+    }
 }

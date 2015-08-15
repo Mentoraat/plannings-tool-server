@@ -13,6 +13,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = {
         "course", "user"
 })
+@IdClass(CourseRelation.CourseRelationId.class)
 public class CourseRelation implements Serializable {
 
     @Id
@@ -35,5 +36,13 @@ public class CourseRelation implements Serializable {
         TEACHER(),
         ASSISTANT(),
         STUDENT();
+    }
+
+    @Data
+    static class CourseRelationId implements Serializable {
+
+        private Course course;
+
+        private User user;
     }
 }
