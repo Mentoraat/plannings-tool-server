@@ -40,7 +40,7 @@ public class User implements AdminVerifiable {
     private String name;
 
     @Basic(fetch = FetchType.LAZY)
-    @Column(name = "access_token", nullable = true)
+    @Column(name = "access_token", nullable = true, unique = true)
     private String accessToken;
 
     @OneToMany(mappedBy = "user")

@@ -2,7 +2,6 @@ package hibernate;
 
 import com.google.inject.Inject;
 import nl.tudelft.planningstool.database.DatabaseTestModule;
-import nl.tudelft.planningstool.database.DbModule;
 import nl.tudelft.planningstool.database.bootstrapper.BootstrapRule;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
 import nl.tudelft.planningstool.database.controllers.CourseDAO;
@@ -34,7 +33,7 @@ public class CourseCreationTest {
     private CourseDAO courseDAO;
 
     @Test
-    @TestBootstrap("no_course.json")
+    @TestBootstrap("courses/no_course.json")
     public void can_persist_course() {
         Course course = createCourse("TI1405", 2015);
 
@@ -42,7 +41,7 @@ public class CourseCreationTest {
     }
 
     @Test
-    @TestBootstrap("one_course.json")
+    @TestBootstrap("courses/one_course.json")
     public void can_retrieve_course() {
         Course course = this.courseDAO.getFromEdition("TI1405", 2015);
 
@@ -50,10 +49,22 @@ public class CourseCreationTest {
     }
 
     @Test
-    @TestBootstrap("one_course.json")
+    @TestBootstrap("courses/one_course.json")
     public void can_not_persist_course_with_same_edition() {
         expected.expect(EntityExistsException.class);
         this.courseDAO.persist(createCourse("TI1405", 2015));
+    }
+
+    @Test
+    @TestBootstrap("courses/one_course.json")
+    public void can_persist_course_with_different_year() {
+        this.courseDAO.persist(createCourse("TI1405", 2016));
+    }
+
+    @Test
+    @TestBootstrap("courses/one_course.json")
+    public void can_persist_course_with_different_courseId() {
+        this.courseDAO.persist(createCourse("TI1406", 2015));
     }
 
     private Course createCourse(String courseId, int year) {
