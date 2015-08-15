@@ -2,12 +2,14 @@ package nl.tudelft.planningstool.database.controllers;
 
 import static nl.tudelft.planningstool.database.entities.courses.QCourse.course;
 
+import com.google.inject.Inject;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 
 import javax.persistence.EntityManager;
 
 public class CourseDAO extends AbstractDAO<Course> {
 
+    @Inject
     protected CourseDAO(EntityManager entityManager) {
         super(entityManager);
     }

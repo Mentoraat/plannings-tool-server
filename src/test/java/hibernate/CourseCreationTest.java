@@ -15,6 +15,8 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 
+import javax.persistence.EntityExistsException;
+
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(JukitoRunner.class)
@@ -32,16 +34,9 @@ public class CourseCreationTest {
     private CourseDAO courseDAO;
 
     @Test
+    @TestBootstrap("no_course.json")
     public void can_persist_course() {
-        Course course = new Course();
-
-        CourseEdition edition = new CourseEdition();
-        edition.setCourseId("TI1405");
-        edition.setYear(2015);
-
-        course.setEdition(edition);
-
-        course.setExamTime(System.currentTimeMillis());
+        Course course = createCourse("TI1405", 2015);
 
         this.courseDAO.persist(course);
     }
@@ -57,7 +52,21 @@ public class CourseCreationTest {
     @Test
     @TestBootstrap("one_course.json")
     public void can_not_persist_course_with_same_edition() {
+        expected.expect(EntityExistsException.class);
+        this.courseDAO.persist(createCourse("TI1405", 2015));
+    }
 
+    private Course createCourse(String courseId, int year) {
+        Course course = new Course();
+
+        CourseEdition edition = new CourseEdition();
+        edition.setCourseId(courseId);
+        edition.setYear(year);
+
+        course.setEdition(edition);
+
+        course.setExamTime(System.currentTimeMillis());
+        return course;
     }
 
 }
