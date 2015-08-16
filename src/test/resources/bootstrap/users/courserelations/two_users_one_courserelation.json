@@ -1,0 +1,33 @@
+{
+  "courses" : [
+    {
+      "edition" : {
+        "courseId" : "TI1405",
+        "year" : 2015
+      },
+      "assignments" : [
+        {
+          "name" : "Assignment 1",
+          "description" : "The first assignment!"
+        }
+      ],
+      "users" : [
+        {
+          "id" : 1,
+          "role" : "STUDENT"
+        }
+      ],
+      "examTime" : 1337
+    }
+  ],
+  "users" : [
+    {
+      "name" : "Admin",
+      "accessToken" : "asdf"
+    },
+    {
+      "name" : "Admin2",
+      "accessToken" : "fdas"
+    }
+  ]
+}
