@@ -13,8 +13,8 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = {
         "assignment", "user"
 })
-@IdClass(Occurence.OccurenceId.class)
-public class Occurence implements Serializable {
+@IdClass(Occurrence.OccurenceId.class)
+public class Occurrence implements Serializable {
 
     @Id
     @ManyToOne
