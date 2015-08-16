@@ -3,8 +3,11 @@ package nl.tudelft.planningstool.database.entities;
 import javax.persistence.*;
 import javax.ws.rs.ForbiddenException;
 
+import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
+import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 
 import java.util.Set;
@@ -14,6 +17,9 @@ import java.util.Set;
 @Table(name = "users")
 @EqualsAndHashCode(of = {
         "id"
+})
+@ToString(of = {
+        "id", "name"
 })
 public class User implements AdminVerifiable {
 
@@ -44,15 +50,37 @@ public class User implements AdminVerifiable {
     private String accessToken;
 
     @OneToMany(mappedBy = "user")
-    private Set<CourseRelation> courses;
+    private Set<CourseRelation> courses = Sets.newHashSet();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<Occurrence> occurrences = Sets.newHashSet();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "adminStatus")
     private AdminStatus adminStatus = AdminStatus.USER;
 
+    public void addCourseRelation(CourseRelation relation) {
+        relation.setUser(this);
+        this.getCourses().add(relation);
+        relation.getCourse().getUsers().add(relation);
+    }
+
     @Override
     public void checkAdmin() throws ForbiddenException {
         this.adminStatus.checkAdmin();
+    }
+
+    public void addOccurrence(Occurrence occurrence) {
+        occurrence.setUser(this);
+
+        if (this.getOccurrences().contains(occurrence)) {
+            throw new IllegalArgumentException(String.format(
+                    "Occurrence {} already exists for user {}",
+                    occurrence,
+                    this));
+        }
+
+        this.getOccurrences().add(occurrence);
     }
 
     enum AdminStatus implements AdminVerifiable {

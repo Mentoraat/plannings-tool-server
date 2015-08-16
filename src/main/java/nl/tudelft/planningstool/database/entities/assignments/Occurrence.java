@@ -6,6 +6,7 @@ import nl.tudelft.planningstool.database.entities.User;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
 
 @Data
 @Entity
@@ -13,7 +14,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = {
         "assignment", "user"
 })
-@IdClass(Occurrence.OccurenceId.class)
+@IdClass(Occurrence.OccurrenceId.class)
 public class Occurrence implements Serializable {
 
     @Id
@@ -30,8 +31,31 @@ public class Occurrence implements Serializable {
     @JoinColumn(name = "user")
     private User user;
 
+    @Column(name = "starting_at", nullable = false)
+    private long startingAt;
+
+    @Column(name = "length")
+    private double length;
+
+    public void setLength(double length) {
+        if (length <= 0) {
+            throw new IllegalArgumentException("Length must be positive and greater than zero.");
+        }
+
+        this.length = length;
+    }
+
+    public void plan(long startingAt, double length) {
+        if (startingAt + TimeUnit.HOURS.toMillis(Double.doubleToLongBits(length)) > this.getAssignment().getDeadline()) {
+            throw new IllegalArgumentException("Assignment must be finished before the deadline.");
+        }
+
+        this.setStartingAt(startingAt);
+        this.setLength(length);
+    }
+
     @Data
-    static class OccurenceId implements Serializable {
+    static class OccurrenceId implements Serializable {
 
         private Assignment assignment;
 

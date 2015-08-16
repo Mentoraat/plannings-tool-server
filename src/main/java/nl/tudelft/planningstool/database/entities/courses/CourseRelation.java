@@ -32,7 +32,7 @@ public class CourseRelation implements Serializable {
     @Column(name = "role")
     private CourseRole courseRole = CourseRole.STUDENT;
 
-    enum CourseRole {
+    public enum CourseRole {
         TEACHER(),
         ASSISTANT(),
         STUDENT();

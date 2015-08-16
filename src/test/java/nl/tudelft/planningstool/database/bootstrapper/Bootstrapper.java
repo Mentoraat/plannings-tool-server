@@ -12,8 +12,10 @@ import nl.tudelft.planningstool.database.controllers.CourseDAO;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
+import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import nl.tudelft.planningstool.database.entities.courses.CourseEdition;
+import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 
 import java.io.File;
 import java.io.IOException;
@@ -80,12 +82,32 @@ public class Bootstrapper {
 
         private BCourseEdition edition;
 
-        private Set<BUser> users;
+        private Set<BCourseRelation> users;
 
         private Set<BAssignment> assignments;
 
         private long examTime;
 
+    }
+
+    @Data
+    private static class BCourseRelation {
+
+        private int id;
+
+        private String role;
+
+        private Set<BOccurrence> occurrences;
+    }
+
+    @Data
+    private static class BOccurrence {
+
+        private int assignment;
+
+        private long startingAt;
+
+        private double length;
     }
 
     @Data
@@ -176,7 +198,39 @@ public class Bootstrapper {
         checkForNull(bCourse.getAssignments(), this::createAssignment).forEach(course::addAssignment);
 
         Course persistedCourse = courseDAO.merge(course);
+        persistCourseUsers(persistedCourse, bCourse.getUsers());
+        courseDAO.merge(persistedCourse);
+
         log.info("Bootstrapper created course {}", persistedCourse);
+    }
+
+    private void persistCourseUsers(Course course, Set<BCourseRelation> users) {
+        users.forEach((u) -> {
+            CourseRelation relation = new CourseRelation();
+
+            relation.setCourse(course);
+            relation.setCourseRole(CourseRelation.CourseRole.valueOf(u.getRole()));
+
+            User user = persistedUsers.get(u.getId());
+            user.addCourseRelation(relation);
+
+            if (u.getOccurrences() != null) {
+                persistOccurrences(course, user, u.getOccurrences());
+            }
+        });
+    }
+
+    private void persistOccurrences(Course course, User user, Set<BOccurrence> occurrences) {
+        occurrences.forEach((o) -> {
+            Occurrence occurrence = new Occurrence();
+            occurrence.setStartingAt(o.getStartingAt());
+            occurrence.setLength(o.getLength());
+            occurrence.setUser(user);
+
+            occurrence.setAssignment(course.getAssignment(o.getAssignment()));
+
+            user.addOccurrence(occurrence);
+        });
     }
 
     protected Assignment createAssignment(BAssignment bAssignment) {
