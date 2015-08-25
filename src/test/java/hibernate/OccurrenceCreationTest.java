@@ -9,14 +9,14 @@ import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
-import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 import org.junit.Test;
+import util.TestBase;
 
 import javax.persistence.EntityExistsException;
 
 import static org.junit.Assert.assertNotNull;
 
-public class OccurrenceCreationTest extends EntityCreationTestBase {
+public class OccurrenceCreationTest extends TestBase {
 
     @Inject
     private OccurrenceDAO occurrenceDAO;

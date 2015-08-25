@@ -1,16 +1,24 @@
 package nl.tudelft.planningstool.core;
 
+import com.google.inject.Injector;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 @Slf4j
 public class App {
 
     public static final int PORT = 9000;
     final Server server;
+
+    @Getter
+    private final AtomicReference<Injector> injectorAtomicReference = new AtomicReference<>();
 
     public App() {
         this.server = new Server(PORT);

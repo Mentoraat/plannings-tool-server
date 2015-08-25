@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -75,6 +76,12 @@ public class Bootstrapper {
 
         private String accessToken;
 
+        private UUID uuid;
+
+        public void setUuid(String uuidString) {
+            uuid = UUID.fromString(uuidString);
+        }
+
     }
 
     @Data
@@ -87,6 +94,12 @@ public class Bootstrapper {
         private Set<BAssignment> assignments;
 
         private long examTime;
+
+        private UUID uuid;
+
+        public void setUuid(String uuidString) {
+            uuid = UUID.fromString(uuidString);
+        }
 
     }
 
@@ -180,6 +193,7 @@ public class Bootstrapper {
         final User user = new User();
         user.setName(bUser.getName());
         user.setAccessToken(bUser.getAccessToken());
+        user.setUuid(bUser.getUuid());
 
         User persistedUser = userDAO.merge(user);
         persistedUsers.put(persistedUser.getId(), persistedUser);
@@ -196,6 +210,9 @@ public class Bootstrapper {
         course.setEdition(edition);
 
         course.setExamTime(bCourse.getExamTime());
+        if (bCourse.getUuid() != null) {
+            course.setUuid(bCourse.getUuid());
+        }
 
         checkForNull(bCourse.getAssignments(), this::createAssignment).forEach(course::addAssignment);
 

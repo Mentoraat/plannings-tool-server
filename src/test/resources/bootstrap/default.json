@@ -1,0 +1,59 @@
+{
+  "courses" : [
+    {
+      "edition" : {
+        "courseId" : "TI1405",
+        "year" : 2015
+      },
+      "uuid" : "aba62cd5-caa6-4e42-a5d6-4909f03038bf",
+      "assignments" : [
+        {
+          "name" : "Assignment 1",
+          "description" : "The first assignment!"
+        }
+      ],
+      "users" : [
+        {
+          "id" : 1,
+          "role" : "STUDENT",
+          "occurrences" : [
+            {
+              "id" : 1,
+              "assignment" : 1,
+              "startingAt" : 1225,
+              "length" : 3
+            }
+          ]
+        }
+      ],
+      "examTime" : 1337
+    },
+    {
+      "edition" : {
+        "courseId" : "TI1505",
+        "year" : 2015
+      },
+      "assignments" : [
+        {
+          "name" : "Assignment 1",
+          "description" : "The first assignment!"
+        }
+      ],
+      "users" : [
+        {
+          "id" : 1,
+          "role" : "STUDENT",
+          "occurrences" : []
+        }
+      ],
+      "examTime" : 1337
+    }
+  ],
+  "users" : [
+    {
+      "name" : "Admin",
+      "accessToken" : "asdf",
+      "uuid" : "aba62cd5-caa6-4e42-a5d6-4909f03038bf"
+    }
+  ]
+}

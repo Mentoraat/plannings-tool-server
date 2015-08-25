@@ -7,12 +7,13 @@ import nl.tudelft.planningstool.database.controllers.CourseDAO;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import org.junit.Test;
+import util.TestBase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class AssignmentCreationTest extends EntityCreationTestBase {
+public class AssignmentCreationTest extends TestBase {
 
     @Inject
     private CourseDAO courseDAO;

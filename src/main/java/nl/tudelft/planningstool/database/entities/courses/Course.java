@@ -5,9 +5,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -18,6 +20,12 @@ public class Course {
 
     @EmbeddedId
     private CourseEdition edition;
+
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(name = "uuid", unique = true)
+    private UUID uuid;
+
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Set<CourseRelation> users = Sets.newHashSet();
