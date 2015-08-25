@@ -1,0 +1,18 @@
+{
+  "courses" : [
+    {
+      "edition" : {
+        "courseId" : "TI1405",
+        "year" : 2015
+      },
+      "assignments" : [
+        {
+          "name" : "Assignment 1",
+          "description" : "The first assignment!"
+        }
+      ],
+      "users" : [],
+      "examTime" : 1337
+    }
+  ]
+}

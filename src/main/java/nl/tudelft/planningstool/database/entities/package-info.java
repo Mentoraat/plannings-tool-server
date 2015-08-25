@@ -4,7 +4,5 @@
  * <code>mvn generate-sources</code>
  * </p>
  * This will generate all the classes at target/metamodel.
- *
- * @author MoodCat
  */
-package me.moodcat.database.entities;
+package nl.tudelft.planningstool.database.entities;
