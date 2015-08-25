@@ -103,6 +103,8 @@ public class Bootstrapper {
     @Data
     private static class BOccurrence {
 
+        private int id;
+
         private int assignment;
 
         private long startingAt;
@@ -225,6 +227,7 @@ public class Bootstrapper {
             Occurrence occurrence = new Occurrence();
             occurrence.setStartingAt(o.getStartingAt());
             occurrence.setLength(o.getLength());
+            occurrence.setId(o.getId());
             occurrence.setUser(user);
 
             occurrence.setAssignment(course.getAssignment(o.getAssignment()));

@@ -17,6 +17,7 @@
           "role" : "STUDENT",
           "occurrences" : [
             {
+              "id" : 1,
               "assignment" : 1,
               "startingAt" : 1225,
               "length" : 3

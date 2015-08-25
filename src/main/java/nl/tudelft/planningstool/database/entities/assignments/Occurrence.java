@@ -18,9 +18,13 @@ import java.util.concurrent.TimeUnit;
 public class Occurrence implements Serializable {
 
     @Id
+    @Column(name = "id")
+    private int id;
+
+    @Id
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "id"),
+            @JoinColumn(name = "assignmentId"),
             @JoinColumn(name = "courseId"),
             @JoinColumn(name = "year")
     })
@@ -56,6 +60,8 @@ public class Occurrence implements Serializable {
 
     @Data
     static class OccurrenceId implements Serializable {
+
+        private int id;
 
         private Assignment assignment;
 

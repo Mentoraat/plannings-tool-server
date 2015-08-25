@@ -60,6 +60,7 @@ public class OccurrenceCreationTest extends EntityCreationTestBase {
         occurrence.setStartingAt(1205);
         occurrence.setLength(5);
         occurrence.setUser(this.userDAO.getFromId(1));
+        occurrence.setId(1);
 
         expected.expect(EntityExistsException.class);
         this.occurrenceDAO.persist(occurrence);
