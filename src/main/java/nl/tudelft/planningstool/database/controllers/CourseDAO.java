@@ -27,4 +27,8 @@ public class CourseDAO extends AbstractDAO<Course> {
                 .where(course.uuid.eq(courseId))
                 .singleResult(course));
     }
+
+    public Course getFromUUID(String courseId) {
+        return getFromUUID(UUID.fromString(courseId));
+    }
 }

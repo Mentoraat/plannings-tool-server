@@ -242,8 +242,8 @@ public class Bootstrapper {
     private void persistOccurrences(Course course, User user, Set<BOccurrence> occurrences) {
         occurrences.forEach((o) -> {
             Occurrence occurrence = new Occurrence();
-            occurrence.setStartingAt(o.getStartingAt());
-            occurrence.setLength(o.getLength());
+            occurrence.setStart_time(o.getStartingAt());
+            occurrence.setEnd_time(Occurrence.calculateEnd_time(o.getStartingAt(), o.getLength()));
             occurrence.setId(o.getId());
             occurrence.setUser(user);
 

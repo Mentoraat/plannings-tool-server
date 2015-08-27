@@ -13,17 +13,17 @@ public class OccurrenceResponse {
 
     private OccurrenceUserResponse user;
 
-    private long startingAt;
+    private long start_time;
 
-    private double length;
+    private long end_time;
 
     public static OccurrenceResponse from(Occurrence occurrence) {
         OccurrenceResponse response = new OccurrenceResponse();
 
         response.setAssignment(AssignmentResponse.from(occurrence.getAssignment()));
         response.setUser(OccurrenceUserResponse.from(occurrence.getUser()));
-        response.setStartingAt(occurrence.getStartingAt());
-        response.setLength(occurrence.getLength());
+        response.setStart_time(occurrence.getStart_time());
+        response.setEnd_time(occurrence.getEnd_time());
 
         return response;
     }

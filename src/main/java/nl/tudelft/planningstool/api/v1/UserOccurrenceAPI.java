@@ -15,39 +15,45 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Produces(value = MediaType.APPLICATION_JSON)
-@Path("v1/users/USER-{userId: (\\d|\\w|-)+}/courses/COURSE-{courseId: (\\d|\\w|-)+}")
-@RequestScoped
+@Path("v1/users/USER-{userId: (\\d|\\w|-)+}/occurrences")
 public class UserOccurrenceAPI {
 
-    private final UserDAO userDAO;
-    private final CourseDAO courseDAO;
+    @Inject
+    private UserDAO userDAO;
 
     @Inject
-    public UserOccurrenceAPI(UserDAO userDAO,
-                             CourseDAO courseDAO) {
-        this.userDAO = userDAO;
-        this.courseDAO = courseDAO;
+    private CourseDAO courseDAO;
+
+    @GET
+    public ListResponse<OccurrenceResponse> get(@PathParam("userId") String userId) {
+        return createListResponse(this.userDAO.getFromUUID(userId).getOccurrences());
     }
 
     @GET
-    public ListResponse<OccurrenceResponse> get(@PathParam("userId") String userId,
+    @Path("/courses/COURSE-{courseId: (\\d|\\w|-)+}")
+    public ListResponse<OccurrenceResponse> getWithCourse(@PathParam("userId") String userId,
                                                 @PathParam("courseId") String courseId) {
-        Course course = this.courseDAO.getFromUUID(UUID.fromString(courseId));
+        final Course course = this.courseDAO.getFromUUID(courseId);
 
-        Set<Occurrence> occurrences = this.userDAO.getFromUUID(UUID.fromString(userId)).getOccurrences().stream()
+        Set<Occurrence> occurrences = this.userDAO.getFromUUID(userId).getOccurrences().stream()
                 .filter(o -> o.getAssignment().getCourse().equals(course))
                 .collect(Collectors.toSet());
 
-        Set<OccurrenceResponse> responses = occurrences.stream()
-                .map(OccurrenceResponse::from)
-                .collect(Collectors.toSet());
-
-        return ListResponse.with(responses);
+        return createListResponse(occurrences);
     }
+
+    private ListResponse<OccurrenceResponse> createListResponse(Collection<Occurrence> occurrences) {
+        return ListResponse.with(
+                occurrences.stream()
+                .map(OccurrenceResponse::from)
+                .collect(Collectors.toSet())
+        );
+    }
+
 }

@@ -22,7 +22,7 @@ public class UserOccurrenceAPITest extends TestBase {
     @Test
     @TestBootstrap("default.json")
     public void should_provide_occurrences() {
-        ListResponse<OccurrenceResponse> response = this.api.get(USER_UUID, COURSE_UUID);
+        ListResponse<OccurrenceResponse> response = this.api.getWithCourse(USER_UUID, COURSE_UUID);
 
         assertThat(response.getTotal_items()).isEqualTo(1);
         assertThat(response.getItems().get(0).getAssignment().getId()).isEqualTo(1);

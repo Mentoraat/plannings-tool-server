@@ -35,8 +35,7 @@ public class OccurrenceCreationTest extends TestBase {
     public void can_persist_occurrence() {
         Occurrence occurrence = new Occurrence();
         occurrence.setAssignment(this.assignmentDAO.getFromCourseWithId("TI1405", 2015, 1));
-        occurrence.setStartingAt(1205);
-        occurrence.setLength(5);
+        occurrence.plan(1205, 5);
         occurrence.setUser(this.userDAO.getFromId(1));
 
         this.occurrenceDAO.persist(occurrence);
@@ -57,8 +56,7 @@ public class OccurrenceCreationTest extends TestBase {
     public void can_not_persist_occurrence_for_same_course() {
         Occurrence occurrence = new Occurrence();
         occurrence.setAssignment(this.assignmentDAO.getFromCourseWithId("TI1405", 2015, 1));
-        occurrence.setStartingAt(1205);
-        occurrence.setLength(5);
+        occurrence.plan(1205, 5);
         occurrence.setUser(this.userDAO.getFromId(1));
         occurrence.setId(1);
 
@@ -71,8 +69,7 @@ public class OccurrenceCreationTest extends TestBase {
     public void can_persist_occurrence_for_different_course() {
         Occurrence occurrence = new Occurrence();
         occurrence.setAssignment(this.assignmentDAO.getFromCourseWithId("TI1505", 2015, 1));
-        occurrence.setStartingAt(1205);
-        occurrence.setLength(5);
+        occurrence.plan(1205, 5);
         occurrence.setUser(this.userDAO.getFromId(1));
 
         this.occurrenceDAO.persist(occurrence);

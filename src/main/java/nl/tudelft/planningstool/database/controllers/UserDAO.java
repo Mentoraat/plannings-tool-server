@@ -27,4 +27,8 @@ public class UserDAO extends AbstractDAO<User> {
                 .where(user.uuid.eq(userId))
                 .singleResult(user));
     }
+
+    public User getFromUUID(String userId) {
+        return getFromUUID(UUID.fromString(userId));
+    }
 }
