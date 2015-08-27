@@ -4,7 +4,7 @@ import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
-import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,7 +20,7 @@ public class UserAssignmentAPI extends ResponseAPI {
         User user = this.userDAO.getFromUUID(userId);
 
         Collection<Assignment> alreadyPlannedAssignments = user.getOccurrences().stream()
-                .map(Occurrence::getAssignment)
+                .map(UserOccurrence::getAssignment)
                 .collect(Collectors.toSet());
 
         Collection<Assignment> assignments = user.getCourses().stream()

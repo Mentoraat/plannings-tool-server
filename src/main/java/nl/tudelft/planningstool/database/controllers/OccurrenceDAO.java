@@ -1,11 +1,11 @@
 package nl.tudelft.planningstool.database.controllers;
 
-import static nl.tudelft.planningstool.database.entities.assignments.QOccurrence.occurrence;
+import static nl.tudelft.planningstool.database.entities.assignments.occurrences.QUserOccurrence.userOccurrence;
 
 import com.google.inject.Inject;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
-import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
 
 import javax.persistence.EntityManager;
 
@@ -17,9 +17,9 @@ public class OccurrenceDAO extends AbstractDAO<Occurrence> {
     }
 
     public Occurrence getOccurrenceForUser(User user, Assignment assignment) {
-        return this.ensureExists(this.query().from(occurrence)
-                .where(occurrence.user.eq(user)
-                        .and(occurrence.assignment.eq(assignment)))
-                .singleResult(occurrence));
+        return this.ensureExists(this.query().from(userOccurrence)
+                .where(userOccurrence.user.eq(user)
+                        .and(userOccurrence.assignment.eq(assignment)))
+                .singleResult(userOccurrence));
     }
 }

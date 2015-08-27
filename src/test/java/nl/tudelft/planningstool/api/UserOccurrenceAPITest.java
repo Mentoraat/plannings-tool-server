@@ -1,9 +1,10 @@
 package nl.tudelft.planningstool.api;
 
 import com.google.inject.Inject;
+import nl.tudelft.planningstool.api.responses.occurrences.UserOccurrenceResponse;
 import util.TestBase;
 import nl.tudelft.planningstool.api.responses.ListResponse;
-import nl.tudelft.planningstool.api.responses.OccurrenceResponse;
+import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
 import nl.tudelft.planningstool.api.v1.UserOccurrenceAPI;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class UserOccurrenceAPITest extends TestBase {
     @Test
     @TestBootstrap("default.json")
     public void should_provide_occurrences() {
-        ListResponse<OccurrenceResponse> response = this.api.getWithCourse(USER_UUID, COURSE_UUID);
+        ListResponse<UserOccurrenceResponse> response = this.api.getWithCourse(USER_UUID, COURSE_UUID);
 
         assertThat(response.getTotal_items()).isEqualTo(1);
         assertThat(response.getItems().get(0).getAssignment().getId()).isEqualTo(1);

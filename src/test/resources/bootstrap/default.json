@@ -26,7 +26,14 @@
           ]
         }
       ],
-      "examTime" : 133700
+      "examTime" : 133700,
+      "occurrences" : [
+        {
+          "id" : 1,
+          "startingAt" : 1225,
+          "length" : 3
+        }
+      ]
     },
     {
       "edition" : {

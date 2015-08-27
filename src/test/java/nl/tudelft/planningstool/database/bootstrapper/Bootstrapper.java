@@ -12,7 +12,9 @@ import nl.tudelft.planningstool.database.controllers.CourseDAO;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
-import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.CourseOccurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import nl.tudelft.planningstool.database.entities.courses.CourseEdition;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -93,6 +96,8 @@ public class Bootstrapper {
 
         private Set<BAssignment> assignments;
 
+        private Set<BOccurrence> occurrences;
+
         private long examTime;
 
         private UUID uuid;
@@ -110,7 +115,7 @@ public class Bootstrapper {
 
         private String role;
 
-        private Set<BOccurrence> occurrences;
+        private Set<BUserOccurrence> occurrences;
     }
 
     @Data
@@ -118,11 +123,15 @@ public class Bootstrapper {
 
         private int id;
 
-        private int assignment;
-
         private long startingAt;
 
         private double length;
+    }
+
+    @Data
+    private static class BUserOccurrence extends BOccurrence {
+
+        private int assignment;
     }
 
     @Data
@@ -214,6 +223,9 @@ public class Bootstrapper {
             course.setUuid(bCourse.getUuid());
         }
 
+        AtomicInteger i = new AtomicInteger();
+        course.setOccurrences(checkForNull(bCourse.getOccurrences(), (o) -> createCourseOccurrence(o, course, i.incrementAndGet())));
+
         checkForNull(bCourse.getAssignments(), this::createAssignment).forEach(course::addAssignment);
 
         Course persistedCourse = courseDAO.merge(course);
@@ -221,6 +233,17 @@ public class Bootstrapper {
         courseDAO.merge(persistedCourse);
 
         log.info("Bootstrapper created course {}", persistedCourse);
+    }
+
+    private CourseOccurrence createCourseOccurrence(BOccurrence occurrence, Course course, int id) {
+        CourseOccurrence courseOccurrence = new CourseOccurrence();
+
+        courseOccurrence.setStart_time(occurrence.getStartingAt());
+        courseOccurrence.setEnd_time(Occurrence.calculateEnd_time(occurrence.getStartingAt(), occurrence.getLength()));
+        courseOccurrence.setCourse(course);
+        courseOccurrence.setId(id);
+
+        return courseOccurrence;
     }
 
     private void persistCourseUsers(Course course, Set<BCourseRelation> users) {
@@ -239,9 +262,9 @@ public class Bootstrapper {
         });
     }
 
-    private void persistOccurrences(Course course, User user, Set<BOccurrence> occurrences) {
+    private void persistOccurrences(Course course, User user, Set<BUserOccurrence> occurrences) {
         occurrences.forEach((o) -> {
-            Occurrence occurrence = new Occurrence();
+            UserOccurrence occurrence = new UserOccurrence();
             occurrence.setStart_time(o.getStartingAt());
             occurrence.setEnd_time(Occurrence.calculateEnd_time(o.getStartingAt(), o.getLength()));
             occurrence.setId(o.getId());

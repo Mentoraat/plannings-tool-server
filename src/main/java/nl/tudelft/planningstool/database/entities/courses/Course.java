@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.CourseOccurrence;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -32,6 +33,9 @@ public class Course {
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Set<Assignment> assignments = Sets.newHashSet();
+
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private Set<CourseOccurrence> occurrences = Sets.newHashSet();
 
     @Column(name = "examTime")
     private long examTime;

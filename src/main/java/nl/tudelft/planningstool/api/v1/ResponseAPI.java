@@ -20,9 +20,9 @@ public class ResponseAPI {
     @Inject
     protected CourseDAO courseDAO;
 
-    protected <T, R> ListResponse<R> createListResponse(Collection<T> occurrences, Function<T, R> mapper) {
+    protected <T, R> ListResponse<R> createListResponse(Collection<T> responses, Function<T, R> mapper) {
         return ListResponse.with(
-                occurrences.stream()
+                responses.stream()
                         .map(mapper)
                         .collect(Collectors.toSet())
         );
