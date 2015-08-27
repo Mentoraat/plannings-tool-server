@@ -7,10 +7,11 @@ import nl.tudelft.planningstool.database.controllers.CourseRelationDAO;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 import org.junit.Test;
+import util.TestBase;
 
 import javax.persistence.EntityExistsException;
 
-public class CourseRelationCreationTest extends EntityCreationTestBase {
+public class CourseRelationCreationTest extends TestBase {
 
     @Inject
     private UserDAO userDAO;

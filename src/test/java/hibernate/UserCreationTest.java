@@ -9,11 +9,12 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
+import util.TestBase;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class UserCreationTest extends EntityCreationTestBase {
+public class UserCreationTest extends TestBase {
 
     @Inject
     private UserDAO userDAO;

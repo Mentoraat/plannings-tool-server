@@ -40,6 +40,7 @@ public class RequestHandler extends ServletContextHandler {
                     injector.getInstance(GuiceFilter.class));
             RequestHandler.this.addFilter(guiceFilterHolder, "/*",
                     EnumSet.allOf(DispatcherType.class));
+            RequestHandler.this.app.getInjectorAtomicReference().set(injector);
         }
     }
 }

@@ -35,27 +35,29 @@ public class Occurrence implements Serializable {
     @JoinColumn(name = "user")
     private User user;
 
-    @Column(name = "starting_at", nullable = false)
-    private long startingAt;
+    @Column(name = "start_time", nullable = false)
+    private long start_time;
 
-    @Column(name = "length")
-    private double length;
+    @Column(name = "end_time")
+    private long end_time;
 
-    public void setLength(double length) {
+    public void plan(long start_time, double length) {
         if (length <= 0) {
             throw new IllegalArgumentException("Length must be positive and greater than zero.");
         }
 
-        this.length = length;
-    }
+        long end_time = calculateEnd_time(start_time, length);
 
-    public void plan(long startingAt, double length) {
-        if (startingAt + TimeUnit.HOURS.toMillis(Double.doubleToLongBits(length)) > this.getAssignment().getDeadline()) {
+        if (end_time > this.getAssignment().getDeadline()) {
             throw new IllegalArgumentException("Assignment must be finished before the deadline.");
         }
 
-        this.setStartingAt(startingAt);
-        this.setLength(length);
+        this.setStart_time(start_time);
+        this.setEnd_time(end_time);
+    }
+
+    public static long calculateEnd_time(long start_time, double length) {
+        return start_time + TimeUnit.HOURS.toSeconds(new Double(length).longValue());
     }
 
     @Data

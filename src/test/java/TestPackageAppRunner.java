@@ -1,6 +1,7 @@
 import com.google.inject.Injector;
 
 import nl.tudelft.planningstool.core.App;
+import nl.tudelft.planningstool.database.bootstrapper.Bootstrapper;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
@@ -19,6 +20,10 @@ public class TestPackageAppRunner {
 
         final App app = new App();
         app.startServer();
+
+        app.getInjectorAtomicReference().get()
+                .getInstance(Bootstrapper.class)
+                .parseFromResource("default.json");
 
         app.joinThread();
     }

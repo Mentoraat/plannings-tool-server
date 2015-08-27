@@ -9,8 +9,10 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -48,6 +50,11 @@ public class User implements AdminVerifiable {
     @Basic(fetch = FetchType.LAZY)
     @Column(name = "access_token", nullable = true, unique = true)
     private String accessToken;
+
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
+    @Column(name = "uuid", unique = true)
+    private UUID uuid;
 
     @OneToMany(mappedBy = "user")
     private Set<CourseRelation> courses = Sets.newHashSet();
