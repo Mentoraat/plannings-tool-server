@@ -20,7 +20,7 @@
             {
               "id" : 1,
               "assignment" : 1,
-              "startingAt" : 1225,
+              "startingAt" : 1440853852400,
               "length" : 3
             }
           ]
@@ -30,7 +30,7 @@
       "occurrences" : [
         {
           "id" : 1,
-          "startingAt" : 1225,
+          "startingAt" : 1440853852600,
           "length" : 3
         }
       ]

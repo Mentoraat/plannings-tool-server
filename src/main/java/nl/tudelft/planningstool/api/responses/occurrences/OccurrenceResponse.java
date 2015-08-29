@@ -1,21 +1,37 @@
 package nl.tudelft.planningstool.api.responses.occurrences;
 
 import lombok.Data;
-import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
 
-import java.util.UUID;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Data
 public abstract class OccurrenceResponse {
 
-    private long start_time;
+    private static final DateFormat DAY_FORMATTER = new SimpleDateFormat("yyyy-mm-dd");
 
-    private long end_time;
+    private static final DateFormat HOUR_FORMATTER = new SimpleDateFormat("HH:mm:ss");
 
-    public void process(Occurrence occurrence) {
-        this.setStart_time(occurrence.getStart_time());
-        this.setEnd_time(occurrence.getEnd_time());
+    private String start;
+
+    private String end;
+
+    private String enabled;
+
+    private String title;
+
+    public void process(Occurrence occurrence, String enabled, String title) {
+        this.setStart(parseTime(occurrence.getStart_time()));
+        this.setEnd(parseTime(occurrence.getEnd_time()));
+        this.setEnabled(enabled);
+        this.setTitle(title);
+    }
+
+    private String parseTime(long time) {
+        Date date = new Date(time);
+        return DAY_FORMATTER.format(date) + "T" + HOUR_FORMATTER.format(date);
     }
 
 }

@@ -19,7 +19,7 @@ public class CourseOccurrenceResponse extends OccurrenceResponse {
 
         response.setCourse(OccurrenceCourseResponse.from(occurrence.getCourse()));
 
-        response.process(occurrence);
+        response.process(occurrence, "false", "College");
 
         return response;
     }

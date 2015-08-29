@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.database.entities.User;
-import nl.tudelft.planningstool.database.entities.assignments.Assignment;
-import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 
 import java.util.UUID;
@@ -24,7 +22,7 @@ public class UserOccurrenceResponse extends OccurrenceResponse {
         response.setAssignment(AssignmentResponse.from(occurrence.getAssignment()));
         response.setUser(OccurrenceUserResponse.from(occurrence.getUser()));
 
-        response.process(occurrence);
+        response.process(occurrence, "true", occurrence.getAssignment().getName());
 
         return response;
     }
