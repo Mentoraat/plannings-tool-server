@@ -10,7 +10,7 @@ import java.util.Date;
 @Data
 public abstract class OccurrenceResponse {
 
-    private static final DateFormat DAY_FORMATTER = new SimpleDateFormat("yyyy-mm-dd");
+    private static final DateFormat DAY_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 
     private static final DateFormat HOUR_FORMATTER = new SimpleDateFormat("HH:mm:ss");
 
@@ -18,14 +18,14 @@ public abstract class OccurrenceResponse {
 
     private String end;
 
-    private String enabled;
+    private String editable;
 
     private String title;
 
-    public void process(Occurrence occurrence, String enabled, String title) {
+    public void process(Occurrence occurrence, String editable, String title) {
         this.setStart(parseTime(occurrence.getStart_time()));
         this.setEnd(parseTime(occurrence.getEnd_time()));
-        this.setEnabled(enabled);
+        this.setEditable(editable);
         this.setTitle(title);
     }
 

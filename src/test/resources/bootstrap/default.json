@@ -20,17 +20,17 @@
             {
               "id" : 1,
               "assignment" : 1,
-              "startingAt" : 1440853852400,
+              "startingAt" : 1440860400000,
               "length" : 3
             }
           ]
         }
       ],
-      "examTime" : 133700,
+      "examTime" : 1450756000000,
       "occurrences" : [
         {
           "id" : 1,
-          "startingAt" : 1440853852600,
+          "startingAt" : 1440756000000,
           "length" : 3
         }
       ]
@@ -53,7 +53,7 @@
           "occurrences" : []
         }
       ],
-      "examTime" : 133700
+      "examTime" : 1450756000000
     }
   ],
   "users" : [
