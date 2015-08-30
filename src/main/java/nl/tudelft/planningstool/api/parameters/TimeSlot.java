@@ -1,0 +1,42 @@
+package nl.tudelft.planningstool.api.parameters;
+
+import lombok.Data;
+import lombok.SneakyThrows;
+
+import javax.ws.rs.QueryParam;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+@Data
+public class TimeSlot {
+
+    private static final SimpleDateFormat DAY_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+
+    private long start;
+
+    private long end;
+
+    @QueryParam("start")
+    public void setStart(String start) {
+        this.start = getTimeLong(start, "start");
+    }
+
+    @QueryParam("end")
+    public void setEnd(String end) {
+        this.end = getTimeLong(end, "end");
+    }
+
+    @SneakyThrows
+    private long getTimeLong(String queryParam, String name) {
+        if (queryParam == null) {
+            throw new IllegalArgumentException("Query parameter '" + name + "' not supplied");
+        }
+
+        try {
+            return DAY_FORMATTER.parse(queryParam).getTime();
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Illegal " + name + " time format");
+        }
+    }
+
+}

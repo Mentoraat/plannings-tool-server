@@ -16,7 +16,7 @@ import nl.tudelft.planningstool.database.entities.assignments.occurrences.Course
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
-import nl.tudelft.planningstool.database.entities.courses.CourseEdition;
+import nl.tudelft.planningstool.database.embeddables.CourseEdition;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 
 import java.io.File;

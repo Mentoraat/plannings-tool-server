@@ -1,4 +1,4 @@
-package nl.tudelft.planningstool.database.entities.courses;
+package nl.tudelft.planningstool.database.embeddables;
 
 import lombok.Data;
 

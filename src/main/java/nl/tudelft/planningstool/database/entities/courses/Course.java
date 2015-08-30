@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
+import nl.tudelft.planningstool.database.embeddables.CourseEdition;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.CourseOccurrence;
 import org.hibernate.annotations.GenericGenerator;
