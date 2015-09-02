@@ -18,8 +18,8 @@ public class TimeSlotTest {
         slot.setStart("2015-08-23");
         slot.setEnd("2015-08-30");
 
-        assertThat(slot.getStart()).isEqualTo(1440280800000L);
-        assertThat(slot.getEnd()).isEqualTo(1440885600000L);
+        assertThat(slot.getStart()).isEqualTo(1440288000000L);
+        assertThat(slot.getEnd()).isEqualTo(1440892800000L);
     }
 
     @Test

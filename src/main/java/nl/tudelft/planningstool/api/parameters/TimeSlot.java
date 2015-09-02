@@ -6,11 +6,19 @@ import lombok.SneakyThrows;
 import javax.ws.rs.QueryParam;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.zone.ZoneRulesProvider;
+import java.util.TimeZone;
+import java.util.spi.TimeZoneNameProvider;
 
 @Data
 public class TimeSlot {
 
     private static final SimpleDateFormat DAY_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+
+    static {
+        DAY_FORMATTER.setTimeZone(TimeZone.getTimeZone("Amsterdam"));
+    }
 
     private long start;
 
