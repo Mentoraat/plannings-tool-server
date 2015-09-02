@@ -1,23 +1,23 @@
 package nl.tudelft.planningstool.api.v1;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nl.tudelft.planningstool.api.parameters.TimeSlot;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.CourseOccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.UserOccurrenceResponse;
 import nl.tudelft.planningstool.database.entities.User;
+import nl.tudelft.planningstool.database.entities.assignments.Assignment;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import org.jboss.resteasy.annotations.Form;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/occurrences")
 public class UserOccurrenceAPI extends ResponseAPI {
@@ -43,6 +43,31 @@ public class UserOccurrenceAPI extends ResponseAPI {
         );
 
         return occurrences;
+    }
+
+    @Data
+    @NoArgsConstructor
+    static class OccurrenceCreation {
+
+        private long startTime;
+
+        private long endTime;
+
+        private Assignment assignment;
+
+    }
+
+    @POST
+    public UserOccurrenceResponse create(@PathParam("userId") String userId,
+                                         OccurrenceCreation creation) {
+        UserOccurrence occurrence = new UserOccurrence();
+        occurrence.setStart_time(creation.getStartTime());
+        occurrence.setEnd_time(creation.getEndTime());
+        occurrence.setAssignment(creation.getAssignment());
+
+        this.userDAO.getFromUUID(userId).addOccurrence(occurrence);
+
+        return UserOccurrenceResponse.from(occurrence);
     }
 
     @GET
