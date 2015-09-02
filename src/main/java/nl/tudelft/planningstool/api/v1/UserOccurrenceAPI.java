@@ -27,8 +27,8 @@ public class UserOccurrenceAPI extends ResponseAPI {
                                                           @Form TimeSlot timeSlot) {
         final User user = this.userDAO.getFromUUID(userId);
         Set<OccurrenceResponse> occurrences = user.getOccurrences().stream()
-                .filter(o -> o.getStart_time() > timeSlot.getStart())
-                .filter(o -> o.getEnd_time() < timeSlot.getEnd())
+                .filter(o -> o.getStart_time() >= timeSlot.getStart())
+                .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
                 .map(UserOccurrenceResponse::from)
                 .collect(Collectors.toSet());
 
@@ -36,8 +36,8 @@ public class UserOccurrenceAPI extends ResponseAPI {
                 user.getCourses().stream()
                         .map((c) -> c.getCourse().getOccurrences())
                         .flatMap(Collection::stream)
-                        .filter(o -> o.getStart_time() > timeSlot.getStart())
-                        .filter(o -> o.getEnd_time() < timeSlot.getEnd())
+                        .filter(o -> o.getStart_time() >= timeSlot.getStart())
+                        .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
                         .map(CourseOccurrenceResponse::from)
                         .collect(Collectors.toSet())
         );

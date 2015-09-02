@@ -1,5 +1,6 @@
 package nl.tudelft.planningstool.api.v1;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import nl.tudelft.planningstool.api.parameters.TimeSlot;
 import nl.tudelft.planningstool.api.responses.occurrences.UserOccurrenceResponse;
@@ -10,8 +11,7 @@ import nl.tudelft.planningstool.api.v1.UserOccurrenceAPI;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
 import org.junit.Test;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,14 +26,21 @@ public class UserOccurrenceAPITest extends TestBase {
 
     @Test
     @TestBootstrap("default.json")
-    public void should_provide_occurrences() {
+    public void should_provide_occurrences() throws Exception {
         Collection<? extends OccurrenceResponse> response = this.api.get(USER_UUID, makeTimeSlot());
 
-        Iterator<? extends OccurrenceResponse> iterator = response.iterator();
+        ArrayList<? extends OccurrenceResponse> list = new ArrayList<>(response);
+        Collections.sort(list, (one, other) -> {
+            if (one.getClass().equals(other.getClass())) {
+                return 0;
+            }
+
+            return one instanceof UserOccurrenceResponse ? -1 : 1;
+        });
 
         assertThat(response.size()).isEqualTo(2);
-        assertThat(iterator.next().getEditable()).isEqualTo("true");
-        assertThat(iterator.next().getEditable()).isEqualTo("false");
+        assertThat(list.get(0).getEditable()).isEqualTo("true");
+        assertThat(list.get(1).getEditable()).isEqualTo("false");
     }
 
     @Test
