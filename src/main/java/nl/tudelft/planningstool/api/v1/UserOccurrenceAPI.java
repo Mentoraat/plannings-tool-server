@@ -7,6 +7,7 @@ import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.CourseOccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.UserOccurrenceResponse;
+import nl.tudelft.planningstool.database.embeddables.CourseEdition;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
@@ -53,7 +54,11 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
         private long endTime;
 
-        private Assignment assignment;
+        private int assignmentId;
+
+        private String courseId;
+
+        private int courseYear;
 
     }
 
@@ -63,7 +68,13 @@ public class UserOccurrenceAPI extends ResponseAPI {
         UserOccurrence occurrence = new UserOccurrence();
         occurrence.setStart_time(creation.getStartTime());
         occurrence.setEnd_time(creation.getEndTime());
-        occurrence.setAssignment(creation.getAssignment());
+        occurrence.setAssignment(
+                this.assignmentDAO.getFromCourseWithId(
+                        creation.getCourseId(),
+                        creation.getCourseYear(),
+                        creation.getAssignmentId()
+                )
+        );
 
         this.userDAO.getFromUUID(userId).addOccurrence(occurrence);
 
