@@ -24,10 +24,10 @@ import java.util.stream.Collectors;
 public class UserOccurrenceAPI extends ResponseAPI {
 
     @GET
-    public Collection<? extends OccurrenceResponse> get(@PathParam("userId") String userId,
+    public Collection<? super OccurrenceResponse> get(@PathParam("userId") String userId,
                                                           @Form TimeSlot timeSlot) {
         final User user = this.userDAO.getFromUUID(userId);
-        Set<OccurrenceResponse> occurrences = user.getOccurrences().stream()
+        Set<? super OccurrenceResponse> occurrences = user.getOccurrences().stream()
                 .filter(o -> o.getStart_time() >= timeSlot.getStart())
                 .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
                 .map(UserOccurrenceResponse::from)

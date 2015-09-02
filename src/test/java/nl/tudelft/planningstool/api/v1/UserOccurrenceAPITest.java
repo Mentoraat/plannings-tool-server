@@ -1,13 +1,12 @@
 package nl.tudelft.planningstool.api.v1;
 
-import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import nl.tudelft.planningstool.api.parameters.TimeSlot;
+import nl.tudelft.planningstool.api.responses.occurrences.CourseOccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.UserOccurrenceResponse;
 import util.TestBase;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
-import nl.tudelft.planningstool.api.v1.UserOccurrenceAPI;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
 import org.junit.Test;
 
@@ -27,9 +26,9 @@ public class UserOccurrenceAPITest extends TestBase {
     @Test
     @TestBootstrap("default.json")
     public void should_provide_occurrences() throws Exception {
-        Collection<? extends OccurrenceResponse> response = this.api.get(USER_UUID, makeTimeSlot());
+        Collection<? super OccurrenceResponse> response = this.api.get(USER_UUID, makeTimeSlot());
 
-        ArrayList<? extends OccurrenceResponse> list = new ArrayList<>(response);
+        ArrayList<? super OccurrenceResponse> list = new ArrayList<>(response);
         Collections.sort(list, (one, other) -> {
             if (one.getClass().equals(other.getClass())) {
                 return 0;
@@ -39,8 +38,8 @@ public class UserOccurrenceAPITest extends TestBase {
         });
 
         assertThat(response.size()).isEqualTo(2);
-        assertThat(list.get(0).getEditable()).isEqualTo("true");
-        assertThat(list.get(1).getEditable()).isEqualTo("false");
+        assertThat(list.get(0)).isInstanceOf(UserOccurrenceResponse.class);
+        assertThat(list.get(1)).isInstanceOf(CourseOccurrenceResponse.class);
     }
 
     @Test
