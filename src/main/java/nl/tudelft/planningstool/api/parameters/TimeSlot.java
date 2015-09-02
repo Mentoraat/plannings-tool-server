@@ -33,8 +33,12 @@ public class TimeSlot {
         }
 
         try {
+            if (!queryParam.matches("\\d{4}-[0-1]\\d-[0-3]\\d")) {
+                throw new Exception();
+            }
+
             return DAY_FORMATTER.parse(queryParam).getTime();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             throw new IllegalArgumentException("Illegal " + name + " time format");
         }
     }

@@ -23,7 +23,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class UserOccurrenceAPI extends ResponseAPI {
 
     @GET
-    public ListResponse<? extends OccurrenceResponse> get(@PathParam("userId") String userId,
+    public Collection<? extends OccurrenceResponse> get(@PathParam("userId") String userId,
                                                           @Form TimeSlot timeSlot) {
         final User user = this.userDAO.getFromUUID(userId);
         Set<OccurrenceResponse> occurrences = user.getOccurrences().stream()
@@ -42,7 +42,7 @@ public class UserOccurrenceAPI extends ResponseAPI {
                         .collect(Collectors.toSet())
         );
 
-        return ListResponse.with(occurrences);
+        return occurrences;
     }
 
     @GET
