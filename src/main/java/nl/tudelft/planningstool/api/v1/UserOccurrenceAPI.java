@@ -17,6 +17,7 @@ import org.jboss.resteasy.annotations.Form;
 
 import javax.ws.rs.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -48,7 +49,7 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
     @Data
     @NoArgsConstructor
-    static class OccurrenceCreation {
+    static class OccurrenceData {
 
         private long startTime;
 
@@ -64,19 +65,45 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
     @POST
     public UserOccurrenceResponse create(@PathParam("userId") String userId,
-                                         OccurrenceCreation creation) {
+                                         OccurrenceData data) {
         UserOccurrence occurrence = new UserOccurrence();
-        occurrence.setStart_time(creation.getStartTime());
-        occurrence.setEnd_time(creation.getEndTime());
+        occurrence.setStart_time(data.getStartTime());
+        occurrence.setEnd_time(data.getEndTime());
         occurrence.setAssignment(
                 this.assignmentDAO.getFromCourseWithId(
-                        creation.getCourseId(),
-                        creation.getCourseYear(),
-                        creation.getAssignmentId()
+                        data.getCourseId(),
+                        data.getCourseYear(),
+                        data.getAssignmentId()
                 )
         );
 
         this.userDAO.getFromUUID(userId).addOccurrence(occurrence);
+
+        return UserOccurrenceResponse.from(occurrence);
+    }
+
+    @PUT
+    public UserOccurrenceResponse update(@PathParam("userId") String userId,
+                                         OccurrenceData data) {
+        User user = this.userDAO.getFromUUID(userId);
+        List<UserOccurrence> occurrences = user.getOccurrences().stream().filter((o) -> {
+            Assignment assignment = o.getAssignment();
+            CourseEdition courseEdition = assignment.getCourse().getEdition();
+
+            return assignment.getId() == data.getAssignmentId()
+                    && courseEdition.getYear() == data.getCourseYear()
+                    && courseEdition.getCourseId().equals(data.getCourseId());
+        }).collect(Collectors.toList());
+        
+        if (occurrences.isEmpty()) {
+            throw new IllegalArgumentException("Occurrence not found.");
+        }
+
+        UserOccurrence occurrence = occurrences.get(0);
+        occurrence.setEnd_time(data.getEndTime());
+        occurrence.setStart_time(data.getStartTime());
+
+        this.userDAO.merge(user);
 
         return UserOccurrenceResponse.from(occurrence);
     }
