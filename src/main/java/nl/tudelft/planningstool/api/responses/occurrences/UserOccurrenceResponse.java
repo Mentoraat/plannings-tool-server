@@ -1,5 +1,6 @@
 package nl.tudelft.planningstool.api.responses.occurrences;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserOccurrenceResponse extends OccurrenceResponse {
 
     private AssignmentResponse assignment;

@@ -34,18 +34,17 @@ public class TimeSlot {
         this.end = getTimeLong(end, "end");
     }
 
-    @SneakyThrows
-    private long getTimeLong(String queryParam, String name) {
-        if (queryParam == null) {
+    public static long getTimeLong(String value, String name) {
+        if (value == null) {
             throw new IllegalArgumentException("Query parameter '" + name + "' not supplied");
         }
 
         try {
-            if (!queryParam.matches("\\d{4}-[0-1]\\d-[0-3]\\d")) {
+            if (!value.matches("\\d{4}-[0-1]\\d-[0-3]\\d")) {
                 throw new Exception();
             }
 
-            return DAY_FORMATTER.parse(queryParam).getTime();
+            return DAY_FORMATTER.parse(value).getTime();
         } catch (Exception e) {
             throw new IllegalArgumentException("Illegal " + name + " time format");
         }

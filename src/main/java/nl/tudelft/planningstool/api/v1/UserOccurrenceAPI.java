@@ -3,6 +3,7 @@ package nl.tudelft.planningstool.api.v1;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nl.tudelft.planningstool.api.parameters.TimeSlot;
+import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.CourseOccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
@@ -10,7 +11,6 @@ import nl.tudelft.planningstool.api.responses.occurrences.UserOccurrenceResponse
 import nl.tudelft.planningstool.database.embeddables.CourseEdition;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
-import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import org.jboss.resteasy.annotations.Form;
@@ -47,33 +47,19 @@ public class UserOccurrenceAPI extends ResponseAPI {
         return occurrences;
     }
 
-    @Data
-    @NoArgsConstructor
-    static class OccurrenceData {
-
-        private long startTime;
-
-        private long endTime;
-
-        private int assignmentId;
-
-        private String courseId;
-
-        private int courseYear;
-
-    }
-
     @POST
     public UserOccurrenceResponse create(@PathParam("userId") String userId,
-                                         OccurrenceData data) {
+                                         UserOccurrenceResponse data) {
         UserOccurrence occurrence = new UserOccurrence();
         occurrence.setStart_time(data.getStartTime());
         occurrence.setEnd_time(data.getEndTime());
+
+        AssignmentResponse assignment = data.getAssignment();
         occurrence.setAssignment(
                 this.assignmentDAO.getFromCourseWithId(
-                        data.getCourseId(),
-                        data.getCourseYear(),
-                        data.getAssignmentId()
+                        assignment.getCourse().getEdition().getCourseId(),
+                        assignment.getCourse().getEdition().getYear(),
+                        assignment.getId()
                 )
         );
 
@@ -84,17 +70,19 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
     @PUT
     public UserOccurrenceResponse update(@PathParam("userId") String userId,
-                                         OccurrenceData data) {
+                                         UserOccurrenceResponse data) {
         User user = this.userDAO.getFromUUID(userId);
+        AssignmentResponse assignmentData = data.getAssignment();
+
         List<UserOccurrence> occurrences = user.getOccurrences().stream().filter((o) -> {
             Assignment assignment = o.getAssignment();
             CourseEdition courseEdition = assignment.getCourse().getEdition();
 
-            return assignment.getId() == data.getAssignmentId()
-                    && courseEdition.getYear() == data.getCourseYear()
-                    && courseEdition.getCourseId().equals(data.getCourseId());
+            return assignment.getId().equals(assignmentData.getId())
+                    && courseEdition.getYear() == assignmentData.getCourse().getEdition().getYear()
+                    && courseEdition.getCourseId().equals(assignmentData.getCourse().getEdition().getCourseId());
         }).collect(Collectors.toList());
-        
+
         if (occurrences.isEmpty()) {
             throw new IllegalArgumentException("Occurrence not found.");
         }
@@ -105,7 +93,7 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
         this.userDAO.merge(user);
 
-        return UserOccurrenceResponse.from(occurrence);
+        return data;
     }
 
     @GET

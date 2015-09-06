@@ -35,7 +35,7 @@ public class AssignmentResponse {
     }
 
     @Data
-    private static class AssignmentCourseResponse {
+    public static class AssignmentCourseResponse {
 
         private CourseEditionResponse edition;
 
