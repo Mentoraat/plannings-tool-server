@@ -9,6 +9,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 @Data
 public abstract class OccurrenceResponse {
@@ -17,15 +18,20 @@ public abstract class OccurrenceResponse {
 
     private static final DateFormat HOUR_FORMATTER = new SimpleDateFormat("HH:mm:ss");
 
+    static {
+        DAY_FORMATTER.setTimeZone(TimeZone.getTimeZone("Amsterdam"));
+        HOUR_FORMATTER.setTimeZone(TimeZone.getTimeZone("Amsterdam"));
+    }
+
     private String start;
 
     private String end;
 
-    private String editable;
+    private boolean editable;
 
     private String title;
 
-    public void process(Occurrence occurrence, String editable, String title) {
+    public void process(Occurrence occurrence, boolean editable, String title) {
         this.setStart(parseTime(occurrence.getStart_time()));
         this.setEnd(parseTime(occurrence.getEnd_time()));
         this.setEditable(editable);

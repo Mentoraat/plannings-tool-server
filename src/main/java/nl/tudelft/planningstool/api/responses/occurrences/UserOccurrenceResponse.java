@@ -24,7 +24,7 @@ public class UserOccurrenceResponse extends OccurrenceResponse {
         response.setAssignment(AssignmentResponse.from(occurrence.getAssignment()));
         response.setUser(OccurrenceUserResponse.from(occurrence.getUser()));
 
-        response.process(occurrence, "true", occurrence.getAssignment().getName());
+        response.process(occurrence, true, occurrence.getAssignment().getName());
 
         return response;
     }

@@ -1,7 +1,6 @@
 package nl.tudelft.planningstool.api.v1;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.TimeSlot;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
@@ -21,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/occurrences")
 public class UserOccurrenceAPI extends ResponseAPI {
 
@@ -90,6 +90,8 @@ public class UserOccurrenceAPI extends ResponseAPI {
         UserOccurrence occurrence = occurrences.get(0);
         occurrence.setEnd_time(data.getEndTime());
         occurrence.setStart_time(data.getStartTime());
+
+        log.info("Updated occurrence {}", occurrence);
 
         this.userDAO.merge(user);
 
