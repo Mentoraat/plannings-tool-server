@@ -30,7 +30,7 @@ public class UserOccurrenceResponse extends OccurrenceResponse {
     }
 
     @Data
-    private static class OccurrenceUserResponse {
+    public static class OccurrenceUserResponse {
 
         private int id;
 

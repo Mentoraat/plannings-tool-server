@@ -50,6 +50,12 @@ public class UserOccurrenceAPI extends ResponseAPI {
     @POST
     public UserOccurrenceResponse create(@PathParam("userId") String userId,
                                          UserOccurrenceResponse data) {
+        User user = this.userDAO.getFromUUID(userId);
+
+        if (!user.getAccessToken().equals(data.getUser().getAccessToken())) {
+            throw new ForbiddenException("Invalid user accessToken");
+        }
+
         UserOccurrence occurrence = new UserOccurrence();
         occurrence.setStart_time(data.getStartTime());
         occurrence.setEnd_time(data.getEndTime());
@@ -63,7 +69,9 @@ public class UserOccurrenceAPI extends ResponseAPI {
                 )
         );
 
-        this.userDAO.getFromUUID(userId).addOccurrence(occurrence);
+        user.addOccurrence(occurrence);
+
+        this.userDAO.merge(user);
 
         return UserOccurrenceResponse.from(occurrence);
     }
