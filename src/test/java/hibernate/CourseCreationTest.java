@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
 import nl.tudelft.planningstool.database.controllers.CourseDAO;
 import nl.tudelft.planningstool.database.entities.courses.Course;
-import nl.tudelft.planningstool.database.entities.courses.CourseEdition;
+import nl.tudelft.planningstool.database.embeddables.CourseEdition;
 import org.junit.Test;
 import util.TestBase;
 

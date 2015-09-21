@@ -8,7 +8,8 @@ import nl.tudelft.planningstool.database.controllers.OccurrenceDAO;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
-import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import org.junit.Test;
 import util.TestBase;
 
@@ -33,7 +34,7 @@ public class OccurrenceCreationTest extends TestBase {
     @Test
     @TestBootstrap("courses/occurrences/no_occurrences.json")
     public void can_persist_occurrence() {
-        Occurrence occurrence = new Occurrence();
+        UserOccurrence occurrence = new UserOccurrence();
         occurrence.setAssignment(this.assignmentDAO.getFromCourseWithId("TI1405", 2015, 1));
         occurrence.plan(1205, 5);
         occurrence.setUser(this.userDAO.getFromId(1));
@@ -54,7 +55,7 @@ public class OccurrenceCreationTest extends TestBase {
     @Test
     @TestBootstrap("courses/occurrences/one_occurrence.json")
     public void can_not_persist_occurrence_for_same_course() {
-        Occurrence occurrence = new Occurrence();
+        UserOccurrence occurrence = new UserOccurrence();
         occurrence.setAssignment(this.assignmentDAO.getFromCourseWithId("TI1405", 2015, 1));
         occurrence.plan(1205, 5);
         occurrence.setUser(this.userDAO.getFromId(1));
@@ -67,7 +68,7 @@ public class OccurrenceCreationTest extends TestBase {
     @Test
     @TestBootstrap("courses/occurrences/two_courses_one_occurrence.json")
     public void can_persist_occurrence_for_different_course() {
-        Occurrence occurrence = new Occurrence();
+        UserOccurrence occurrence = new UserOccurrence();
         occurrence.setAssignment(this.assignmentDAO.getFromCourseWithId("TI1505", 2015, 1));
         occurrence.plan(1205, 5);
         occurrence.setUser(this.userDAO.getFromId(1));

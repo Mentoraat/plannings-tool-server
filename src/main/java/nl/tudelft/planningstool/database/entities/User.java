@@ -7,7 +7,7 @@ import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -60,7 +60,7 @@ public class User implements AdminVerifiable {
     private Set<CourseRelation> courses = Sets.newHashSet();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Occurrence> occurrences = Sets.newHashSet();
+    private Set<UserOccurrence> occurrences = Sets.newHashSet();
 
     @Enumerated(EnumType.STRING)
     @Column(name = "adminStatus")
@@ -77,7 +77,7 @@ public class User implements AdminVerifiable {
         this.adminStatus.checkAdmin();
     }
 
-    public void addOccurrence(Occurrence occurrence) {
+    public void addOccurrence(UserOccurrence occurrence) {
         occurrence.setUser(this);
 
         if (this.getOccurrences().contains(occurrence)) {

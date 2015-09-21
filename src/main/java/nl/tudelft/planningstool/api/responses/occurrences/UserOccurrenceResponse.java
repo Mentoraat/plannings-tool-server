@@ -1,35 +1,36 @@
-package nl.tudelft.planningstool.api.responses;
+package nl.tudelft.planningstool.api.responses.occurrences;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.database.entities.User;
-import nl.tudelft.planningstool.database.entities.assignments.Occurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 
 import java.util.UUID;
 
 @Data
-public class OccurrenceResponse {
+@EqualsAndHashCode(callSuper = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class UserOccurrenceResponse extends OccurrenceResponse {
 
     private AssignmentResponse assignment;
 
     private OccurrenceUserResponse user;
 
-    private long start_time;
-
-    private long end_time;
-
-    public static OccurrenceResponse from(Occurrence occurrence) {
-        OccurrenceResponse response = new OccurrenceResponse();
+    public static UserOccurrenceResponse from(UserOccurrence occurrence) {
+        UserOccurrenceResponse response = new UserOccurrenceResponse();
 
         response.setAssignment(AssignmentResponse.from(occurrence.getAssignment()));
         response.setUser(OccurrenceUserResponse.from(occurrence.getUser()));
-        response.setStart_time(occurrence.getStart_time());
-        response.setEnd_time(occurrence.getEnd_time());
+
+        response.process(occurrence, true, occurrence.getAssignment().getName());
 
         return response;
     }
 
     @Data
-    private static class OccurrenceUserResponse {
+    public static class OccurrenceUserResponse {
 
         private int id;
 

@@ -1,7 +1,7 @@
 package nl.tudelft.planningstool.api.responses;
 
 import lombok.Data;
-import nl.tudelft.planningstool.database.entities.courses.CourseEdition;
+import nl.tudelft.planningstool.database.embeddables.CourseEdition;
 
 @Data
 public class CourseEditionResponse {
