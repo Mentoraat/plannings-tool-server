@@ -33,7 +33,7 @@ public abstract class Occurrence implements Serializable {
     }
 
     public static long calculateEnd_time(long start_time, double length) {
-        return start_time + TimeUnit.HOURS.toMillis(new Double(length).longValue());
+        return start_time + TimeUnit.HOURS.toMillis((long) length);
     }
 
     protected abstract void validateEndTime(long end_time);
