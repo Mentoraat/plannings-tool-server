@@ -11,6 +11,13 @@ import java.time.zone.ZoneRulesProvider;
 import java.util.TimeZone;
 import java.util.spi.TimeZoneNameProvider;
 
+/**
+ * TimeSlot can be used in {@link QueryParam} to parse a time-format. Whenever you include TimeSlot, its value
+ * must be provided.
+ *
+ * The default TimeZone is Amsterdam.
+ * Valid time-formats are: yyyy-MM-dd
+ */
 @Data
 public class TimeSlot {
 
@@ -34,7 +41,7 @@ public class TimeSlot {
         this.end = getTimeLong(end, "end");
     }
 
-    public static long getTimeLong(String value, String name) {
+    private static long getTimeLong(String value, String name) {
         if (value == null) {
             throw new IllegalArgumentException("Query parameter '" + name + "' not supplied");
         }

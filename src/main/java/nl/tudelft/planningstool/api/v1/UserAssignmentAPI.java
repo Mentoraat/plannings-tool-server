@@ -12,9 +12,20 @@ import javax.ws.rs.PathParam;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+/**
+ * API end-point to provide assignments for an user.
+ */
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/courses/assignments")
 public class UserAssignmentAPI extends ResponseAPI {
 
+    /**
+     * Get all the assignments for the provided user.
+     * Returns only the assignments that have not been planned yet (e.g. do not have an occurrence relation with
+     * the provided user).
+     *
+     * @param userId The id of the user.
+     * @return A list of assigments.
+     */
     @GET
     public ListResponse<AssignmentResponse> get(@PathParam("userId") String userId) {
         User user = this.userDAO.getFromUUID(userId);

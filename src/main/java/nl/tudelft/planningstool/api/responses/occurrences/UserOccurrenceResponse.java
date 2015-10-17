@@ -9,6 +9,9 @@ import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOc
 
 import java.util.UUID;
 
+/**
+ * A {@link OccurrenceResponse} which is for a single user-assignment.
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 @JsonIgnoreProperties(ignoreUnknown = true)

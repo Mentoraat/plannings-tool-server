@@ -20,14 +20,26 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * API end-point to provide occurrences for an user.
+ */
 @Slf4j
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/occurrences")
 public class UserOccurrenceAPI extends ResponseAPI {
 
+    /**
+     * Get all occurrences for the user in the given timeslot. Aggregrates personal occurrences as well as course-wide
+     * occurrences.
+     *
+     * @param userId The id of the user.
+     * @param timeSlot The timeslot the occurrence must happen in.
+     * @return All occurrences that happen for the user in the timeslot.
+     */
     @GET
     public Collection<? super OccurrenceResponse> get(@PathParam("userId") String userId,
-                                                          @Form TimeSlot timeSlot) {
+                                                      @Form TimeSlot timeSlot) {
         final User user = this.userDAO.getFromUUID(userId);
+
         Set<? super OccurrenceResponse> occurrences = user.getOccurrences().stream()
                 .filter(o -> o.getStart_time() >= timeSlot.getStart())
                 .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
@@ -47,6 +59,13 @@ public class UserOccurrenceAPI extends ResponseAPI {
         return occurrences;
     }
 
+    /**
+     * Create a new occurrence for the provided user.
+     *
+     * @param userId The id of the user.
+     * @param data The data to provided to create the occurrence from.
+     * @return The Occurrence, if succesfully created.
+     */
     @POST
     public UserOccurrenceResponse create(@PathParam("userId") String userId,
                                          UserOccurrenceResponse data) {
@@ -76,19 +95,28 @@ public class UserOccurrenceAPI extends ResponseAPI {
         return UserOccurrenceResponse.from(occurrence);
     }
 
+    /**
+     * Update an existing occurrence for the provided user.
+     *
+     * @param userId The id of the user.
+     * @param data The data provided to update the occurrence.
+     * @return The occurrence, if succesfully updated.
+     */
     @PUT
     public UserOccurrenceResponse update(@PathParam("userId") String userId,
                                          UserOccurrenceResponse data) {
         User user = this.userDAO.getFromUUID(userId);
         AssignmentResponse assignmentData = data.getAssignment();
+        int year = assignmentData.getCourse().getEdition().getYear();
+        String courseId = assignmentData.getCourse().getEdition().getCourseId();
 
         List<UserOccurrence> occurrences = user.getOccurrences().stream().filter((o) -> {
             Assignment assignment = o.getAssignment();
             CourseEdition courseEdition = assignment.getCourse().getEdition();
 
             return assignment.getId().equals(assignmentData.getId())
-                    && courseEdition.getYear() == assignmentData.getCourse().getEdition().getYear()
-                    && courseEdition.getCourseId().equals(assignmentData.getCourse().getEdition().getCourseId());
+                    && courseEdition.getYear() == year
+                    && courseEdition.getCourseId().equals(courseId);
         }).collect(Collectors.toList());
 
         if (occurrences.isEmpty()) {
@@ -106,6 +134,13 @@ public class UserOccurrenceAPI extends ResponseAPI {
         return data;
     }
 
+    /**
+     * Get all occurrences of a specific course for the provided user.
+     *
+     * @param userId The id of the user.
+     * @param courseId The courseId of the course.
+     * @return All occurrences of the course for the user.
+     */
     @GET
     @Path("/courses/COURSE-{courseId: (\\d|\\w|-)+}")
     public ListResponse<UserOccurrenceResponse> getWithCourse(@PathParam("userId") String userId,

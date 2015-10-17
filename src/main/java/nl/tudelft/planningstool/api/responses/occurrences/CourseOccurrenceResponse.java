@@ -8,6 +8,9 @@ import nl.tudelft.planningstool.database.entities.courses.Course;
 
 import java.util.UUID;
 
+/**
+ * A {@link OccurrenceResponse} which is course-wide.
+ */
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class CourseOccurrenceResponse extends OccurrenceResponse {

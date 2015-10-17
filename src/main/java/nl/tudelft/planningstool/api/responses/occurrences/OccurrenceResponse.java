@@ -11,6 +11,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+/**
+ * <p>Provides a JSON-Object for an occurrence.</p>
+ *
+ * Valid time-formats are: yyyy-MM-dd,HH:mm:ss
+ *
+ * <b>Note the comma in the middle!</b>
+ */
 @Data
 public abstract class OccurrenceResponse {
 
@@ -38,11 +45,21 @@ public abstract class OccurrenceResponse {
         this.setTitle(title);
     }
 
+    /**
+     * Converts {@link #getStart()} to the corresponding unix timestamp.
+     *
+     * @return {@link #getStart()} as unix timestamp
+     */
     @JsonIgnore
     public long getStartTime() {
         return parseTime(start, "start");
     }
 
+    /**
+     * Converts {@link #getEnd()} to the corresponding unix timestamp.
+     *
+     * @return {@link #getEnd()} as unix timestamp
+     */
     @JsonIgnore
     public long getEndTime() {
         return parseTime(end, "end");
