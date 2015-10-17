@@ -12,6 +12,9 @@ import java.util.Collection;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Base class to provide general <a href="{@docRoot}/nl/tudelft/planningstool/database/controllers/package-summary.html#package_description">DAO's</a>.
+ */
 @Produces(value = MediaType.APPLICATION_JSON)
 public class ResponseAPI {
 
