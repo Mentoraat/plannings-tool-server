@@ -10,6 +10,7 @@ import nl.tudelft.planningstool.database.entities.assignments.occurrences.Course
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Table(name = "courses")
 @EqualsAndHashCode(of = "edition")
 @ToString(of = "edition")
-public class Course {
+public class Course implements Serializable {
 
     @EmbeddedId
     private CourseEdition edition;
@@ -56,7 +57,7 @@ public class Course {
         }
 
         throw new EntityNotFoundException(String.format(
-                "Assignment with id {} does not exist for course {}",
+                "Assignment with id %s does not exist for course %s",
                 assignmentId,
                 this));
     }

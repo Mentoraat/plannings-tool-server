@@ -14,7 +14,7 @@ import java.io.Serializable;
         "course", "id"
 })
 @IdClass(Assignment.AssignmentId.class)
-public class Assignment {
+public class Assignment implements Serializable {
 
     public static final int DEFAULT_ID = -1;
 

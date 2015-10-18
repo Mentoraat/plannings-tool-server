@@ -67,7 +67,10 @@ public abstract class OccurrenceResponse {
 
     private static String parseTime(long time) {
         Date date = new Date(time);
-        return DAY_FORMATTER.format(date) + "T" + HOUR_FORMATTER.format(date);
+
+        synchronized (DAY_FORMATTER) {
+            return DAY_FORMATTER.format(date) + "T" + HOUR_FORMATTER.format(date);
+        }
     }
 
     private static long parseTime(String time, String name) {
@@ -77,7 +80,9 @@ public abstract class OccurrenceResponse {
 
         String[] split = time.split(",");
         try {
-            return DAY_FORMATTER.parse(split[0]).getTime() + HOUR_FORMATTER.parse(split[1]).getTime();
+            synchronized (DAY_FORMATTER) {
+                return DAY_FORMATTER.parse(split[0]).getTime() + HOUR_FORMATTER.parse(split[1]).getTime();
+            }
         } catch (ParseException e) {
             throw new IllegalArgumentException("Illegal " + name + " time format");
         }

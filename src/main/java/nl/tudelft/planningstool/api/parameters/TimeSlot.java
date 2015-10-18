@@ -51,7 +51,9 @@ public class TimeSlot {
                 throw new Exception();
             }
 
-            return DAY_FORMATTER.parse(value).getTime();
+            synchronized (DAY_FORMATTER) {
+                return DAY_FORMATTER.parse(value).getTime();
+            }
         } catch (Exception e) {
             throw new IllegalArgumentException("Illegal " + name + " time format");
         }

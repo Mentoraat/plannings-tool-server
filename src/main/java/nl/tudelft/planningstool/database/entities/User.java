@@ -11,6 +11,7 @@ import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOc
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.io.Serializable;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,7 +24,7 @@ import java.util.UUID;
 @ToString(of = {
         "id", "name"
 })
-public class User implements AdminVerifiable {
+public class User implements AdminVerifiable, Serializable {
 
     /**
      * The unique id of the user.
@@ -82,7 +83,7 @@ public class User implements AdminVerifiable {
 
         if (this.getOccurrences().contains(occurrence)) {
             throw new IllegalArgumentException(String.format(
-                    "Occurrence {} already exists for user {}",
+                    "Occurrence %s already exists for user %s",
                     occurrence,
                     this));
         }
