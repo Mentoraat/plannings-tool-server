@@ -94,7 +94,7 @@ public class Bootstrapper {
 
         private Set<BCourseRelation> users;
 
-        private Set<BAssignment> assignments;
+        private List<BAssignment> assignments;
 
         private Set<BOccurrence> occurrences;
 
@@ -132,6 +132,8 @@ public class Bootstrapper {
     private static class BUserOccurrence extends BOccurrence {
 
         private int assignment;
+
+        private String status;
     }
 
     @Data
@@ -144,10 +146,6 @@ public class Bootstrapper {
 
     @Data
     private static class BAssignment {
-
-        private int id;
-
-        private BCourse course;
 
         private String name;
 
@@ -223,8 +221,7 @@ public class Bootstrapper {
             course.setUuid(bCourse.getUuid());
         }
 
-        AtomicInteger i = new AtomicInteger();
-        course.setOccurrences(checkForNull(bCourse.getOccurrences(), (o) -> createCourseOccurrence(o, course, i.incrementAndGet())));
+        course.setOccurrences(checkForNull(bCourse.getOccurrences(), (o) -> createCourseOccurrence(o, course)));
 
         checkForNull(bCourse.getAssignments(), this::createAssignment).forEach(course::addAssignment);
 
@@ -235,13 +232,13 @@ public class Bootstrapper {
         log.info("Bootstrapper created course {}", persistedCourse);
     }
 
-    private CourseOccurrence createCourseOccurrence(BOccurrence occurrence, Course course, int id) {
+    private CourseOccurrence createCourseOccurrence(BOccurrence occurrence, Course course) {
         CourseOccurrence courseOccurrence = new CourseOccurrence();
 
         courseOccurrence.setStart_time(occurrence.getStartingAt());
         courseOccurrence.setEnd_time(Occurrence.calculateEnd_time(occurrence.getStartingAt(), occurrence.getLength()));
         courseOccurrence.setCourse(course);
-        courseOccurrence.setId(id);
+        courseOccurrence.setId(occurrence.getId());
 
         return courseOccurrence;
     }
@@ -269,6 +266,10 @@ public class Bootstrapper {
             occurrence.setEnd_time(Occurrence.calculateEnd_time(o.getStartingAt(), o.getLength()));
             occurrence.setId(o.getId());
             occurrence.setUser(user);
+
+            if (o.getStatus() != null) {
+                occurrence.setStatus(UserOccurrence.OccurrenceStatus.valueOf(o.getStatus()));
+            }
 
             occurrence.setAssignment(course.getAssignment(o.getAssignment()));
 

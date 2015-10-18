@@ -37,9 +37,9 @@ public class UserOccurrenceAPITest extends TestBase {
             return one instanceof UserOccurrenceResponse ? -1 : 1;
         });
 
-        assertThat(response.size()).isEqualTo(2);
+        assertThat(response.size()).isEqualTo(3);
         assertThat(list.get(0)).isInstanceOf(UserOccurrenceResponse.class);
-        assertThat(list.get(1)).isInstanceOf(CourseOccurrenceResponse.class);
+        assertThat(list.get(2)).isInstanceOf(CourseOccurrenceResponse.class);
     }
 
     @Test
