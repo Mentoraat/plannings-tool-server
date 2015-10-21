@@ -27,7 +27,7 @@
           ]
         }
       ],
-      "examTime" : 1450756000000,
+      "examTime" : 50,
       "occurrences" : [
         {
           "id" : 1,
@@ -99,7 +99,7 @@
           ]
         }
       ],
-      "examTime" : 1450756000000
+      "examTime" : 45
     }
   ],
   "users" : [

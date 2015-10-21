@@ -217,14 +217,14 @@ public class Bootstrapper {
         edition.setYear(bCourse.getEdition().getYear());
         course.setEdition(edition);
 
-        course.setExamTime(bCourse.getExamTime());
+        course.setExamTime(getUnixFromHour(bCourse.getExamTime()));
         if (bCourse.getUuid() != null) {
             course.setUuid(bCourse.getUuid());
         }
 
         course.setOccurrences(checkForNull(bCourse.getOccurrences(), (o) -> createCourseOccurrence(o, course)));
 
-        checkForNull(bCourse.getAssignments(), this::createAssignment).forEach(course::addAssignment);
+        checkForNull(bCourse.getAssignments(), (a) -> { return this.createAssignment(a, course.getExamTime()); }).forEach(course::addAssignment);
 
         Course persistedCourse = courseDAO.merge(course);
         persistCourseUsers(persistedCourse, bCourse.getUsers());
@@ -236,7 +236,7 @@ public class Bootstrapper {
     private CourseOccurrence createCourseOccurrence(BOccurrence occurrence, Course course) {
         CourseOccurrence courseOccurrence = new CourseOccurrence();
 
-        courseOccurrence.plan(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(occurrence.getStartingAt()), occurrence.getLength());
+        courseOccurrence.plan(getUnixFromHour(occurrence.getStartingAt()), occurrence.getLength());
         courseOccurrence.setCourse(course);
         courseOccurrence.setId(occurrence.getId());
 
@@ -263,7 +263,7 @@ public class Bootstrapper {
         occurrences.forEach((o) -> {
             UserOccurrence occurrence = new UserOccurrence();
             occurrence.setAssignment(course.getAssignment(o.getAssignment()));
-            occurrence.plan(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(o.getStartingAt()), o.getLength());
+            occurrence.plan(this.getUnixFromHour(o.getStartingAt()), o.getLength());
             occurrence.setId(o.getId());
             occurrence.setUser(user);
 
@@ -271,14 +271,13 @@ public class Bootstrapper {
                 occurrence.setStatus(UserOccurrence.OccurrenceStatus.valueOf(o.getStatus()));
             }
 
-
             user.addOccurrence(occurrence);
         });
     }
 
-    protected Assignment createAssignment(BAssignment bAssignment) {
+    protected Assignment createAssignment(BAssignment bAssignment, long examTime) {
         final Assignment assignment = new Assignment();
-        assignment.setDeadline(bAssignment.getDeadline());
+        assignment.setDeadline(examTime);
         assignment.setDescription(bAssignment.getDescription());
         assignment.setLength(bAssignment.getLength());
         assignment.setName(bAssignment.getName());
@@ -294,6 +293,10 @@ public class Bootstrapper {
     
     public User getUser(Integer id) {
         return persistedUsers.get(id);
+    }
+
+    private long getUnixFromHour(long hours) {
+        return System.currentTimeMillis() + TimeUnit.HOURS.toMillis(hours);
     }
 
 }
