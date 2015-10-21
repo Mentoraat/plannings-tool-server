@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -235,8 +236,7 @@ public class Bootstrapper {
     private CourseOccurrence createCourseOccurrence(BOccurrence occurrence, Course course) {
         CourseOccurrence courseOccurrence = new CourseOccurrence();
 
-        courseOccurrence.setStart_time(occurrence.getStartingAt());
-        courseOccurrence.setEnd_time(Occurrence.calculateEnd_time(occurrence.getStartingAt(), occurrence.getLength()));
+        courseOccurrence.plan(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(occurrence.getStartingAt()), occurrence.getLength());
         courseOccurrence.setCourse(course);
         courseOccurrence.setId(occurrence.getId());
 
@@ -262,8 +262,8 @@ public class Bootstrapper {
     private void persistOccurrences(Course course, User user, Set<BUserOccurrence> occurrences) {
         occurrences.forEach((o) -> {
             UserOccurrence occurrence = new UserOccurrence();
-            occurrence.setStart_time(o.getStartingAt());
-            occurrence.setEnd_time(Occurrence.calculateEnd_time(o.getStartingAt(), o.getLength()));
+            occurrence.setAssignment(course.getAssignment(o.getAssignment()));
+            occurrence.plan(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(o.getStartingAt()), o.getLength());
             occurrence.setId(o.getId());
             occurrence.setUser(user);
 
@@ -271,7 +271,6 @@ public class Bootstrapper {
                 occurrence.setStatus(UserOccurrence.OccurrenceStatus.valueOf(o.getStatus()));
             }
 
-            occurrence.setAssignment(course.getAssignment(o.getAssignment()));
 
             user.addOccurrence(occurrence);
         });
