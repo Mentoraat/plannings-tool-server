@@ -20,17 +20,18 @@
             {
               "id" : 1,
               "assignment" : 1,
-              "startingAt" : 1440860400000,
-              "length" : 3
+              "startingAt" : 27,
+              "length" : 3,
+              "status" : "UNFINISHED"
             }
           ]
         }
       ],
-      "examTime" : 1450756000000,
+      "examTime" : 50,
       "occurrences" : [
         {
           "id" : 1,
-          "startingAt" : 1440756000000,
+          "startingAt" : 5,
           "length" : 3
         }
       ]
@@ -44,16 +45,61 @@
         {
           "name" : "Assignment 1",
           "description" : "The first assignment!"
+        },
+        {
+          "name" : "Assignment 2",
+          "description" : "The second assignment!"
+        },
+        {
+          "name" : "Assignment 3",
+          "description" : "The third assignment!"
+        },
+        {
+          "name" : "Assignment 4",
+          "description" : "The fourth assignment!"
+        },
+        {
+          "name" : "Assignment 5",
+          "description" : "The fifth assignment!"
         }
       ],
       "users" : [
         {
           "id" : 1,
           "role" : "STUDENT",
-          "occurrences" : []
+          "occurrences" : [
+            {
+              "id" : 2,
+              "assignment" : 2,
+              "startingAt" : -2,
+              "length" : 3,
+              "status" : "UNFINISHED"
+            },
+            {
+              "id" : 3,
+              "assignment" : 3,
+              "startingAt" : -7,
+              "length" : 1,
+              "status" : "FINISHED"
+            },
+            {
+              "id" : 4,
+              "assignment" : 4,
+              "startingAt" : -9,
+              "length" : 2,
+              "status" : "FINISHED"
+            },
+            {
+              "id" : 5,
+              "assignment" : 5,
+              "startingAt" : 7,
+              "length" : 3,
+              "status" : "UNFINISHED"
+            }
+          ]
         }
       ],
-      "examTime" : 1450756000000
+      "examTime" : 45
     }
   ],
   "users" : [

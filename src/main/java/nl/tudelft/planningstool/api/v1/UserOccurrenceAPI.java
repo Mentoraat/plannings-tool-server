@@ -90,6 +90,8 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
         user.addOccurrence(occurrence);
 
+        log.info("Created occurrence {}", occurrence);
+
         this.userDAO.merge(user);
 
         return UserOccurrenceResponse.from(occurrence);
@@ -127,7 +129,7 @@ public class UserOccurrenceAPI extends ResponseAPI {
         occurrence.setEnd_time(data.getEndTime());
         occurrence.setStart_time(data.getStartTime());
 
-        log.info("Updated occurrence {}", occurrence);
+        log.info("Updated occurrence %s", occurrence);
 
         this.userDAO.merge(user);
 

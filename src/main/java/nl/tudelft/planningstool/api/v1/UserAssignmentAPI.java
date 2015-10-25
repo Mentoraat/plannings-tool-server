@@ -1,5 +1,6 @@
 package nl.tudelft.planningstool.api.v1;
 
+import com.google.common.collect.Maps;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.database.entities.User;
@@ -10,6 +11,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +32,8 @@ public class UserAssignmentAPI extends ResponseAPI {
      */
     @GET
     public ListResponse<AssignmentResponse> get(@PathParam("userId") String userId) {
+        long now = System.currentTimeMillis();
+
         User user = this.userDAO.getFromUUID(userId);
 
         Collection<Assignment> alreadyPlannedAssignments = user.getOccurrences().stream()
@@ -37,10 +43,31 @@ public class UserAssignmentAPI extends ResponseAPI {
         Collection<Assignment> assignments = user.getCourses().stream()
                 .map((c) -> c.getCourse().getAssignments())
                 .flatMap(Collection::stream)
-                .filter((a) -> !alreadyPlannedAssignments.contains(a))
+                .filter(a -> !alreadyPlannedAssignments.contains(a))
+                .filter(a -> a.getDeadline() > now)
                 .collect(Collectors.toSet());
 
         return createListResponse(assignments);
+    }
+
+    @GET
+    @Path("/stats")
+    public int[] getWithStatus(@PathParam("userId") String userId) {
+        Map<UserOccurrence.OccurrenceStatus, AtomicInteger> map = Maps.newConcurrentMap();
+
+        for (UserOccurrence.OccurrenceStatus status : UserOccurrence.OccurrenceStatus.values()) {
+            map.put(status, new AtomicInteger());
+        }
+
+        AtomicInteger total = new AtomicInteger();
+
+        this.userDAO.getFromUUID(userId).getOccurrences().forEach(o -> {
+            map.get(o.getStatus()).incrementAndGet();
+            total.incrementAndGet();
+        });
+
+        int finished = map.get(UserOccurrence.OccurrenceStatus.FINISHED).get();
+        return new int[] {finished, total.get() - finished};
     }
 
     private ListResponse<AssignmentResponse> createListResponse(Collection<Assignment> assignments) {

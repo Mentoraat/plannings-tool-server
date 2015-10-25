@@ -38,6 +38,10 @@ public class UserOccurrence extends Occurrence {
     @JoinColumn(name = "user")
     private User user;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "occurrenceStatus")
+    private OccurrenceStatus status = OccurrenceStatus.PLANNED;
+
     @Override
     protected void validateEndTime(long end_time) {
         if (end_time > this.getAssignment().getDeadline()) {
@@ -54,5 +58,9 @@ public class UserOccurrence extends Occurrence {
 
         private User user;
 
+    }
+
+    public enum OccurrenceStatus {
+        PLANNED, UNFINISHED, FINISHED;
     }
 }
