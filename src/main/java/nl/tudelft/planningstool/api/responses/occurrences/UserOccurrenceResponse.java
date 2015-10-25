@@ -21,11 +21,14 @@ public class UserOccurrenceResponse extends OccurrenceResponse {
 
     private OccurrenceUserResponse user;
 
+    private UserOccurrence.OccurrenceStatus status;
+
     public static UserOccurrenceResponse from(UserOccurrence occurrence) {
         UserOccurrenceResponse response = new UserOccurrenceResponse();
 
         response.setAssignment(AssignmentResponse.from(occurrence.getAssignment()));
         response.setUser(OccurrenceUserResponse.from(occurrence.getUser()));
+        response.setStatus(occurrence.getStatus());
 
         response.process(occurrence, true, occurrence.getAssignment().getName());
 

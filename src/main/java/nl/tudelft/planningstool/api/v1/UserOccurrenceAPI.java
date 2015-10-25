@@ -128,8 +128,9 @@ public class UserOccurrenceAPI extends ResponseAPI {
         UserOccurrence occurrence = occurrences.get(0);
         occurrence.setEnd_time(data.getEndTime());
         occurrence.setStart_time(data.getStartTime());
+        occurrence.setStatus(data.getStatus());
 
-        log.info("Updated occurrence %s", occurrence);
+        log.info("Updated occurrence {}", occurrence);
 
         this.userDAO.merge(user);
 
