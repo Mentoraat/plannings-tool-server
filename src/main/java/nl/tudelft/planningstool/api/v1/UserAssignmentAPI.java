@@ -67,10 +67,10 @@ public class UserAssignmentAPI extends ResponseAPI {
         });
 
         long total = user.getCourses().stream()
-            .map(CourseRelation::getCourse)
-            .map(Course::getAssignments)
-            .flatMap(Collection::stream)
-            .count();
+                .map(CourseRelation::getCourse)
+                .map(Course::getAssignments)
+                .flatMap(Collection::stream)
+                .count();
 
         int finished = map.get(UserOccurrence.OccurrenceStatus.FINISHED).get();
         return new int[] {finished, (int) total - finished};

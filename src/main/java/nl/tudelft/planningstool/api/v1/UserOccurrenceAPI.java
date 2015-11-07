@@ -16,6 +16,7 @@ import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
+import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 import org.jboss.resteasy.annotations.Form;
 
 import javax.ws.rs.*;
@@ -49,27 +50,11 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
         Map<CourseEditionResponse, String> map = Maps.newHashMap();
 
-        Set<UserOccurrenceResponse> userOccurrences = user.getOccurrences().stream()
-                .filter(o -> o.getStart_time() >= timeSlot.getStart())
-                .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
-                .map(UserOccurrenceResponse::from)
-                .map(o -> {
-                    map.put(o.getAssignment().getCourse().getEdition(), null);
-                    return o;
-                })
-                .collect(Collectors.toSet());
-
-        Set<CourseOccurrenceResponse> courseOccurrences = user.getCourses().stream()
-                .map((c) -> c.getCourse().getOccurrences())
-                .flatMap(Collection::stream)
-                .filter(o -> o.getStart_time() >= timeSlot.getStart())
-                .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
-                .map(CourseOccurrenceResponse::from)
-                .map(o -> {
-                    map.put(o.getCourse().getEdition(), null);
-                    return o;
-                })
-                .collect(Collectors.toSet());
+        user.getCourses().stream()
+                .map(CourseRelation::getCourse)
+                .map(Course::getEdition)
+                .map(CourseEditionResponse::from)
+                .forEach(e -> map.put(e, null));
 
         int i = 0;
 
@@ -82,17 +67,29 @@ public class UserOccurrenceAPI extends ResponseAPI {
             i++;
         }
 
-        Set<? super OccurrenceResponse> occurrences = Sets.newConcurrentHashSet();
+        Set<? super OccurrenceResponse> occurrences = user.getOccurrences().stream()
+                .filter(o -> o.getStart_time() >= timeSlot.getStart())
+                .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
+                .map(o -> {
+                    UserOccurrenceResponse r = UserOccurrenceResponse.from(o);
+                    r.setColor(map.get(r.getAssignment().getCourse().getEdition()));
+                    return r;
+                })
+                .collect(Collectors.toSet());
 
-        userOccurrences.forEach(o -> {
-            o.setColor(map.get(o.getAssignment().getCourse().getEdition()));
-            occurrences.add(o);
-        });
-
-        courseOccurrences.forEach(o -> {
-            o.setColor(map.get(o.getCourse().getEdition()));
-            occurrences.add(o);
-        });
+        occurrences.addAll(
+                user.getCourses().stream()
+                        .map((c) -> c.getCourse().getOccurrences())
+                        .flatMap(Collection::stream)
+                        .filter(o -> o.getStart_time() >= timeSlot.getStart())
+                        .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
+                        .map(CourseOccurrenceResponse::from)
+                        .map(o -> {
+                            map.put(o.getCourse().getEdition(), null);
+                            return o;
+                        })
+                        .collect(Collectors.toSet())
+        );
 
         return occurrences;
     }
