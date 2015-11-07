@@ -1,8 +1,12 @@
 package nl.tudelft.planningstool.api.v1;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.TimeSlot;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
+import nl.tudelft.planningstool.api.responses.CourseEditionResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.CourseOccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
@@ -17,6 +21,7 @@ import org.jboss.resteasy.annotations.Form;
 import javax.ws.rs.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +31,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/occurrences")
 public class UserOccurrenceAPI extends ResponseAPI {
+
+    private static final List<String> COLORS = Lists.newArrayList("yellow", "blue", "red");
 
     /**
      * Get all occurrences for the user in the given timeslot. Aggregrates personal occurrences as well as course-wide
@@ -40,21 +47,52 @@ public class UserOccurrenceAPI extends ResponseAPI {
                                                       @Form TimeSlot timeSlot) {
         final User user = this.userDAO.getFromUUID(userId);
 
-        Set<? super OccurrenceResponse> occurrences = user.getOccurrences().stream()
+        Map<CourseEditionResponse, String> map = Maps.newHashMap();
+
+        Set<UserOccurrenceResponse> userOccurrences = user.getOccurrences().stream()
                 .filter(o -> o.getStart_time() >= timeSlot.getStart())
                 .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
                 .map(UserOccurrenceResponse::from)
+                .map(o -> {
+                    map.put(o.getAssignment().getCourse().getEdition(), null);
+                    return o;
+                })
                 .collect(Collectors.toSet());
 
-        occurrences.addAll(
-                user.getCourses().stream()
-                        .map((c) -> c.getCourse().getOccurrences())
-                        .flatMap(Collection::stream)
-                        .filter(o -> o.getStart_time() >= timeSlot.getStart())
-                        .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
-                        .map(CourseOccurrenceResponse::from)
-                        .collect(Collectors.toSet())
-        );
+        Set<CourseOccurrenceResponse> courseOccurrences = user.getCourses().stream()
+                .map((c) -> c.getCourse().getOccurrences())
+                .flatMap(Collection::stream)
+                .filter(o -> o.getStart_time() >= timeSlot.getStart())
+                .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
+                .map(CourseOccurrenceResponse::from)
+                .map(o -> {
+                    map.put(o.getCourse().getEdition(), null);
+                    return o;
+                })
+                .collect(Collectors.toSet());
+
+        int i = 0;
+
+        for (CourseEditionResponse r : map.keySet()) {
+            if (i == COLORS.size()) {
+                break;
+            }
+
+            map.put(r, COLORS.get(i));
+            i++;
+        }
+
+        Set<? super OccurrenceResponse> occurrences = Sets.newConcurrentHashSet();
+
+        userOccurrences.forEach(o -> {
+            o.setColor(map.get(o.getAssignment().getCourse().getEdition()));
+            occurrences.add(o);
+        });
+
+        courseOccurrences.forEach(o -> {
+            o.setColor(map.get(o.getCourse().getEdition()));
+            occurrences.add(o);
+        });
 
         return occurrences;
     }

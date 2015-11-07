@@ -28,7 +28,7 @@ public class CourseOccurrenceResponse extends OccurrenceResponse {
     }
 
     @Data
-    private static class OccurrenceCourseResponse {
+    public static class OccurrenceCourseResponse {
 
         private CourseEditionResponse edition;
 
