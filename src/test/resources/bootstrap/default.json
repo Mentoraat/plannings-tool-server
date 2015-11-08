@@ -120,6 +120,33 @@
         }
       ],
       "examTime" : 45
+    },
+    {
+      "edition" : {
+        "courseId" : "TI1605",
+        "year" : 2015
+      },
+      "assignments" : [
+        {
+          "name" : "Assignment 1 - TI1605",
+          "description" : "The first assignment!"
+        }
+      ],
+      "users" : [
+        {
+          "id" : 1,
+          "role" : "STUDENT",
+          "occurrences" : []
+        }
+      ],
+      "examTime" : 50,
+      "occurrences" : [
+        {
+          "id" : 1,
+          "startingAt" : 15,
+          "length" : 4
+        }
+      ]
     }
   ],
   "users" : [

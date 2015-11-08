@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/occurrences")
 public class UserOccurrenceAPI extends ResponseAPI {
 
-    private static final List<String> COLORS = Lists.newArrayList("yellow", "blue", "red");
+    private static final List<String> COLORS = Lists.newArrayList("#ff6447", "#5441b0", "#708090");
 
     /**
      * Get all occurrences for the user in the given timeslot. Aggregrates personal occurrences as well as course-wide
