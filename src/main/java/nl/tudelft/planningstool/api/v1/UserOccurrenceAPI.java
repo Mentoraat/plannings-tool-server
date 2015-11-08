@@ -48,32 +48,14 @@ public class UserOccurrenceAPI extends ResponseAPI {
                                                       @Form TimeSlot timeSlot) {
         final User user = this.userDAO.getFromUUID(userId);
 
-        Map<CourseEditionResponse, String> map = Maps.newHashMap();
-
-        user.getCourses().stream()
-                .map(CourseRelation::getCourse)
-                .map(Course::getEdition)
-                .map(CourseEditionResponse::from)
-                .forEach(e -> map.put(e, null));
-
-        int i = 0;
-
-        for (CourseEditionResponse r : map.keySet()) {
-            if (i == COLORS.size()) {
-                break;
-            }
-
-            map.put(r, COLORS.get(i));
-            i++;
-        }
+        Map<CourseEditionResponse, String> map = getColorsFromCourseEdiction(user);
 
         Set<? super OccurrenceResponse> occurrences = user.getOccurrences().stream()
                 .filter(o -> o.getStart_time() >= timeSlot.getStart())
                 .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
                 .map(o -> {
                     UserOccurrenceResponse r = UserOccurrenceResponse.from(o);
-                    r.setColor(map.get(r.getAssignment().getCourse().getEdition()));
-                    return r;
+                    return setColorUserOccurrenceResponse(map, r);
                 })
                 .collect(Collectors.toSet());
 
@@ -92,6 +74,33 @@ public class UserOccurrenceAPI extends ResponseAPI {
         );
 
         return occurrences;
+    }
+
+    private UserOccurrenceResponse setColorUserOccurrenceResponse(Map<CourseEditionResponse, String> map, UserOccurrenceResponse r) {
+        r.setColor(map.get(r.getAssignment().getCourse().getEdition()));
+        return r;
+    }
+
+    private Map<CourseEditionResponse, String> getColorsFromCourseEdiction(User user) {
+        Map<CourseEditionResponse, String> map = Maps.newHashMap();
+
+        user.getCourses().stream()
+                .map(CourseRelation::getCourse)
+                .map(Course::getEdition)
+                .map(CourseEditionResponse::from)
+                .forEach(e -> map.put(e, null));
+
+        int i = 0;
+
+        for (CourseEditionResponse r : map.keySet()) {
+            if (i == COLORS.size()) {
+                break;
+            }
+
+            map.put(r, COLORS.get(i));
+            i++;
+        }
+        return map;
     }
 
     /**
@@ -129,7 +138,8 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
         this.userDAO.merge(user);
 
-        return UserOccurrenceResponse.from(occurrence);
+        UserOccurrenceResponse r = UserOccurrenceResponse.from(occurrence);
+        return setColorUserOccurrenceResponse(this.getColorsFromCourseEdiction(user), r);
     }
 
     /**
