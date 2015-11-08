@@ -61,6 +61,26 @@
         {
           "name" : "Assignment 5",
           "description" : "The fifth assignment!"
+        },
+        {
+          "name" : "Assignment 6",
+          "description" : "The fifth assignment!"
+        },
+        {
+          "name" : "Assignment 7",
+          "description" : "The fifth assignment!"
+        },
+        {
+          "name" : "Assignment 8",
+          "description" : "The fifth assignment!"
+        },
+        {
+          "name" : "Assignment 9",
+          "description" : "The fifth assignment!"
+        },
+        {
+          "name" : "Assignment 10",
+          "description" : "The fifth assignment!"
         }
       ],
       "users" : [
@@ -100,6 +120,33 @@
         }
       ],
       "examTime" : 45
+    },
+    {
+      "edition" : {
+        "courseId" : "TI1605",
+        "year" : 2015
+      },
+      "assignments" : [
+        {
+          "name" : "Assignment 1 - TI1605",
+          "description" : "The first assignment!"
+        }
+      ],
+      "users" : [
+        {
+          "id" : 1,
+          "role" : "STUDENT",
+          "occurrences" : []
+        }
+      ],
+      "examTime" : 50,
+      "occurrences" : [
+        {
+          "id" : 1,
+          "startingAt" : 15,
+          "length" : 4
+        }
+      ]
     }
   ],
   "users" : [

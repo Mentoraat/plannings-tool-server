@@ -38,6 +38,8 @@ public abstract class OccurrenceResponse {
 
     private String title;
 
+    private String color;
+
     public void process(Occurrence occurrence, boolean editable, String title) {
         this.setStart(parseTime(occurrence.getStart_time()));
         this.setEnd(parseTime(occurrence.getEnd_time()));

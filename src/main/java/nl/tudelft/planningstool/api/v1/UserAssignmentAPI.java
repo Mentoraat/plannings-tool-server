@@ -6,6 +6,8 @@ import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
+import nl.tudelft.planningstool.database.entities.courses.Course;
+import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -59,15 +61,19 @@ public class UserAssignmentAPI extends ResponseAPI {
             map.put(status, new AtomicInteger());
         }
 
-        AtomicInteger total = new AtomicInteger();
-
-        this.userDAO.getFromUUID(userId).getOccurrences().forEach(o -> {
+        User user = this.userDAO.getFromUUID(userId);
+        user.getOccurrences().forEach(o -> {
             map.get(o.getStatus()).incrementAndGet();
-            total.incrementAndGet();
         });
 
+        long total = user.getCourses().stream()
+                .map(CourseRelation::getCourse)
+                .map(Course::getAssignments)
+                .flatMap(Collection::stream)
+                .count();
+
         int finished = map.get(UserOccurrence.OccurrenceStatus.FINISHED).get();
-        return new int[] {finished, total.get() - finished};
+        return new int[] {finished, (int) total - finished};
     }
 
     private ListResponse<AssignmentResponse> createListResponse(Collection<Assignment> assignments) {

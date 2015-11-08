@@ -1,8 +1,12 @@
 package nl.tudelft.planningstool.api.v1;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.TimeSlot;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
+import nl.tudelft.planningstool.api.responses.CourseEditionResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.CourseOccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
@@ -12,11 +16,13 @@ import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
+import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 import org.jboss.resteasy.annotations.Form;
 
 import javax.ws.rs.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,6 +32,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/occurrences")
 public class UserOccurrenceAPI extends ResponseAPI {
+
+    private static final List<String> COLORS = Lists.newArrayList("#ff6447", "#5441b0", "#708090");
 
     /**
      * Get all occurrences for the user in the given timeslot. Aggregrates personal occurrences as well as course-wide
@@ -40,10 +48,15 @@ public class UserOccurrenceAPI extends ResponseAPI {
                                                       @Form TimeSlot timeSlot) {
         final User user = this.userDAO.getFromUUID(userId);
 
+        Map<CourseEditionResponse, String> map = getColorsFromCourseEdiction(user);
+
         Set<? super OccurrenceResponse> occurrences = user.getOccurrences().stream()
                 .filter(o -> o.getStart_time() >= timeSlot.getStart())
                 .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
-                .map(UserOccurrenceResponse::from)
+                .map(o -> {
+                    UserOccurrenceResponse r = UserOccurrenceResponse.from(o);
+                    return setColorUserOccurrenceResponse(map, r);
+                })
                 .collect(Collectors.toSet());
 
         occurrences.addAll(
@@ -52,11 +65,42 @@ public class UserOccurrenceAPI extends ResponseAPI {
                         .flatMap(Collection::stream)
                         .filter(o -> o.getStart_time() >= timeSlot.getStart())
                         .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
-                        .map(CourseOccurrenceResponse::from)
+                        .map(o -> {
+                            CourseOccurrenceResponse r = CourseOccurrenceResponse.from(o);
+                            r.setColor(map.get(r.getCourse().getEdition()));
+                            return r;
+                        })
                         .collect(Collectors.toSet())
         );
 
         return occurrences;
+    }
+
+    private UserOccurrenceResponse setColorUserOccurrenceResponse(Map<CourseEditionResponse, String> map, UserOccurrenceResponse r) {
+        r.setColor(map.get(r.getAssignment().getCourse().getEdition()));
+        return r;
+    }
+
+    private Map<CourseEditionResponse, String> getColorsFromCourseEdiction(User user) {
+        Map<CourseEditionResponse, String> map = Maps.newHashMap();
+
+        user.getCourses().stream()
+                .map(CourseRelation::getCourse)
+                .map(Course::getEdition)
+                .map(CourseEditionResponse::from)
+                .forEach(e -> map.put(e, null));
+
+        int i = 0;
+
+        for (CourseEditionResponse r : map.keySet()) {
+            if (i == COLORS.size()) {
+                break;
+            }
+
+            map.put(r, COLORS.get(i));
+            i++;
+        }
+        return map;
     }
 
     /**
@@ -94,7 +138,8 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
         this.userDAO.merge(user);
 
-        return UserOccurrenceResponse.from(occurrence);
+        UserOccurrenceResponse r = UserOccurrenceResponse.from(occurrence);
+        return setColorUserOccurrenceResponse(this.getColorsFromCourseEdiction(user), r);
     }
 
     /**
