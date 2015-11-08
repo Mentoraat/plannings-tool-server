@@ -83,10 +83,10 @@ public class UserOccurrenceAPI extends ResponseAPI {
                         .flatMap(Collection::stream)
                         .filter(o -> o.getStart_time() >= timeSlot.getStart())
                         .filter(o -> o.getEnd_time() <= timeSlot.getEnd())
-                        .map(CourseOccurrenceResponse::from)
                         .map(o -> {
-                            map.put(o.getCourse().getEdition(), null);
-                            return o;
+                            CourseOccurrenceResponse r = CourseOccurrenceResponse.from(o);
+                            r.setColor(map.get(r.getCourse().getEdition()));
+                            return r;
                         })
                         .collect(Collectors.toSet())
         );
