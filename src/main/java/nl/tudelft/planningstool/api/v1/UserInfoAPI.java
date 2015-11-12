@@ -1,0 +1,65 @@
+package nl.tudelft.planningstool.api.v1;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import nl.tudelft.planningstool.api.responses.CourseEditionResponse;
+import nl.tudelft.planningstool.api.responses.UserResponse;
+import nl.tudelft.planningstool.database.entities.User;
+import nl.tudelft.planningstool.database.entities.courses.Course;
+import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+@Path("v1/users/USER-{userId: (\\d|\\w|-)+}")
+public class UserInfoAPI extends ResponseAPI {
+
+    private static final List<String> COLORS = Lists.newArrayList("#ff6447", "#5441b0", "#708090");
+
+    @GET
+    public UserCoursesResponse get(@PathParam("userId") String userId) {
+        User user = this.userDAO.getFromUUID(userId);
+
+        Map<CourseEditionResponse, String> map = new TreeMap<>();
+
+        user.getCourses().stream()
+                .map(CourseRelation::getCourse)
+                .map(Course::getEdition)
+                .map(CourseEditionResponse::from)
+                .forEach(e -> map.put(e, null));
+
+        int i = 0;
+
+        for (CourseEditionResponse r : map.keySet()) {
+            if (i == COLORS.size()) {
+                break;
+            }
+
+            map.put(r, COLORS.get(i));
+            i++;
+        }
+
+        UserCoursesResponse r = new UserCoursesResponse();
+        r.setUser(UserResponse.from(user));
+        r.setColors(map);
+
+        return r;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    private static class UserCoursesResponse {
+
+        private UserResponse user;
+
+        private Map<CourseEditionResponse, String> colors;
+    }
+}
