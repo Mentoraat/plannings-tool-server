@@ -27,4 +27,16 @@ public class UserDAO extends AbstractDAO<User> {
                 .where(user.uuid.eq(userId))
                 .singleResult(user));
     }
+
+    public User getFromUsername(String username) {
+        return ensureExists(this.query().from(user)
+                .where(user.name.eq(username))
+                .singleResult(user));
+    }
+
+    public User getFromAccessToken(String token) {
+        return ensureExists(this.query().from(user)
+                .where(user.accessToken.eq(token))
+                .singleResult(user));
+    }
 }

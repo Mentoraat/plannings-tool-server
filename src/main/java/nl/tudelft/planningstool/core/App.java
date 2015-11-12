@@ -1,7 +1,6 @@
 package nl.tudelft.planningstool.core;
 
 import com.google.inject.Injector;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
@@ -30,8 +29,8 @@ public class App {
         final RequestHandler requestHandler = new RequestHandler(this);
 
         final ContextHandlerCollection handlers = new ContextHandlerCollection();
-        handlers.addContext("/", "/").setHandler(requestHandler);
 
+        handlers.addContext("/", "/").setHandler(requestHandler);
         return handlers;
     }
 

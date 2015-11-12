@@ -52,6 +52,9 @@ public class User implements AdminVerifiable, Serializable {
     @Column(name = "access_token", nullable = true, unique = true)
     private String accessToken;
 
+    @Column(name = "hashed_password", nullable = false, unique = false)
+    private String hashedPassword;
+
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
     @Column(name = "uuid", unique = true)
