@@ -153,6 +153,7 @@
     {
       "name" : "Admin",
       "accessToken" : "asdf",
+      "status" : "ADMIN",
       "uuid" : "aba62cd5-caa6-4e42-a5d6-4909f03038bf"
     }
   ]

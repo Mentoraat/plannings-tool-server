@@ -82,6 +82,8 @@ public class Bootstrapper {
 
         private UUID uuid;
 
+        private String status;
+
         public void setUuid(String uuidString) {
             uuid = UUID.fromString(uuidString);
         }
@@ -202,6 +204,10 @@ public class Bootstrapper {
         user.setName(bUser.getName());
         user.setAccessToken(bUser.getAccessToken());
         user.setUuid(bUser.getUuid());
+
+        if (bUser.getStatus() != null) {
+            user.setAdminStatus(User.AdminStatus.valueOf(bUser.getStatus()));
+        }
 
         User persistedUser = userDAO.merge(user);
         persistedUsers.put(persistedUser.getId(), persistedUser);
