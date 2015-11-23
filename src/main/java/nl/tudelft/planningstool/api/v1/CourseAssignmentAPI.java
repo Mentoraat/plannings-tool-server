@@ -30,7 +30,7 @@ public class CourseAssignmentAPI extends ResponseAPI {
             CourseEdition edition = r.getCourse().getEdition();
 
             return edition.getCourseId().equals(courseId) && edition.getYear() == year;
-        }).collect(Collectors.toList()).get(0);
+        }).findAny().get();
 
         if (relation.getCourseRole() == CourseRelation.CourseRole.STUDENT) {
             u.checkAdmin();
