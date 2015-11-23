@@ -17,6 +17,7 @@ import javax.ws.rs.PathParam;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}")
 public class UserInfoAPI extends ResponseAPI {
@@ -51,6 +52,17 @@ public class UserInfoAPI extends ResponseAPI {
         r.setColors(map);
 
         return r;
+    }
+
+    @GET
+    @Path("/courses")
+    public List<CourseEditionResponse> getCourses(@PathParam("userId") String userId) {
+        return this.userDAO.getFromUUID(userId)
+                .getCourses().stream()
+                .map(CourseRelation::getCourse)
+                .map(Course::getEdition)
+                .map(CourseEditionResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Data

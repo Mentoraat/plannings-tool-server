@@ -1,5 +1,6 @@
 package nl.tudelft.planningstool.api.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.courses.Course;
@@ -7,6 +8,7 @@ import nl.tudelft.planningstool.database.entities.courses.Course;
 import java.util.UUID;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AssignmentResponse {
 
     private Integer id;

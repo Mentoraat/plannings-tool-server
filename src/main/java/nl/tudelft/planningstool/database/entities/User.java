@@ -91,7 +91,7 @@ public class User implements AdminVerifiable, Serializable {
         this.getOccurrences().add(occurrence);
     }
 
-    enum AdminStatus implements AdminVerifiable {
+    public enum AdminStatus implements AdminVerifiable {
 
         ADMIN {
             @Override
