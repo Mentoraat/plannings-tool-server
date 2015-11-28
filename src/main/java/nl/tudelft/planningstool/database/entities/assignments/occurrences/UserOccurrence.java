@@ -35,7 +35,7 @@ public class UserOccurrence extends Occurrence {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "`user`")
     private User user;
 
     @Enumerated(EnumType.STRING)

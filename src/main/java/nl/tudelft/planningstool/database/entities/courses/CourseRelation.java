@@ -26,7 +26,7 @@ public class CourseRelation implements Serializable {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "user")
+    @JoinColumn(name = "`user`")
     private User user;
 
     @Column(name = "role")
