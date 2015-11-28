@@ -31,7 +31,7 @@ public class ResponseAPI {
         return ListResponse.with(
                 responses.stream()
                         .map(mapper)
-                        .collect(Collectors.toSet())
+                        .collect(Collectors.toList())
         );
     }
 

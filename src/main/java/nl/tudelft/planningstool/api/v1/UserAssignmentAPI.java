@@ -12,8 +12,7 @@ import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -34,20 +33,18 @@ public class UserAssignmentAPI extends ResponseAPI {
      */
     @GET
     public ListResponse<AssignmentResponse> get(@PathParam("userId") String userId) {
-        long now = System.currentTimeMillis();
-
         User user = this.userDAO.getFromUUID(userId);
 
         Collection<Assignment> alreadyPlannedAssignments = user.getOccurrences().stream()
                 .map(UserOccurrence::getAssignment)
                 .collect(Collectors.toSet());
 
-        Collection<Assignment> assignments = user.getCourses().stream()
+        List<Assignment> assignments = user.getCourses().stream()
                 .map((c) -> c.getCourse().getAssignments())
                 .flatMap(Collection::stream)
                 .filter(a -> !alreadyPlannedAssignments.contains(a))
-                .filter(a -> a.getDeadline() > now)
-                .collect(Collectors.toSet());
+                .sorted((one, other) -> Long.compare(one.getDeadline(), other.getDeadline()))
+                .collect(Collectors.toList());
 
         return createListResponse(assignments);
     }
