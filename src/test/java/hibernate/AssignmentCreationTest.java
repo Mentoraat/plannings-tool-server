@@ -1,19 +1,34 @@
 package hibernate;
 
 import com.google.inject.Inject;
+import nl.tudelft.planningstool.database.DatabaseTestModule;
+import nl.tudelft.planningstool.database.bootstrapper.BootstrapRule;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
 import nl.tudelft.planningstool.database.controllers.AssignmentDAO;
 import nl.tudelft.planningstool.database.controllers.CourseDAO;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.courses.Course;
+import org.jukito.JukitoRunner;
+import org.jukito.UseModules;
+import org.junit.Rule;
 import org.junit.Test;
-import util.TestBase;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class AssignmentCreationTest extends TestBase {
+@RunWith(JukitoRunner.class)
+@UseModules(DatabaseTestModule.class)
+public class AssignmentCreationTest {
+
+    @Rule
+    @Inject
+    public BootstrapRule bootstrapRule;
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
     @Inject
     private CourseDAO courseDAO;

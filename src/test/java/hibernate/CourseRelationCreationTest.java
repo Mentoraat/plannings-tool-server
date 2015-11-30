@@ -1,17 +1,32 @@
 package hibernate;
 
 import com.google.inject.Inject;
+import nl.tudelft.planningstool.database.DatabaseTestModule;
+import nl.tudelft.planningstool.database.bootstrapper.BootstrapRule;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
 import nl.tudelft.planningstool.database.controllers.CourseDAO;
 import nl.tudelft.planningstool.database.controllers.CourseRelationDAO;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
+import org.jukito.JukitoRunner;
+import org.jukito.UseModules;
+import org.junit.Rule;
 import org.junit.Test;
-import util.TestBase;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 
 import javax.persistence.EntityExistsException;
 
-public class CourseRelationCreationTest extends TestBase {
+@RunWith(JukitoRunner.class)
+@UseModules(DatabaseTestModule.class)
+public class CourseRelationCreationTest {
+
+    @Rule
+    @Inject
+    public BootstrapRule bootstrapRule;
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
     @Inject
     private UserDAO userDAO;

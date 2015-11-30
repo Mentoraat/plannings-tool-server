@@ -1,6 +1,8 @@
 package hibernate;
 
 import com.google.inject.Inject;
+import nl.tudelft.planningstool.database.DatabaseTestModule;
+import nl.tudelft.planningstool.database.bootstrapper.BootstrapRule;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
 import nl.tudelft.planningstool.database.controllers.AssignmentDAO;
 import nl.tudelft.planningstool.database.controllers.CourseDAO;
@@ -10,14 +12,27 @@ import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
+import org.jukito.JukitoRunner;
+import org.jukito.UseModules;
+import org.junit.Rule;
 import org.junit.Test;
-import util.TestBase;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 
 import javax.persistence.EntityExistsException;
 
 import static org.junit.Assert.assertNotNull;
 
-public class OccurrenceCreationTest extends TestBase {
+@RunWith(JukitoRunner.class)
+@UseModules(DatabaseTestModule.class)
+public class OccurrenceCreationTest {
+
+    @Rule
+    @Inject
+    public BootstrapRule bootstrapRule;
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
     @Inject
     private OccurrenceDAO occurrenceDAO;

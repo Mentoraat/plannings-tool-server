@@ -4,11 +4,17 @@ package nl.tudelft.planningstool.api.v1;
 import com.google.inject.Inject;
 import nl.tudelft.planningstool.api.parameters.TimeSlot;
 import nl.tudelft.planningstool.api.responses.occurrences.UserOccurrenceResponse;
-import util.TestBase;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
+import nl.tudelft.planningstool.database.DatabaseTestModule;
+import nl.tudelft.planningstool.database.bootstrapper.BootstrapRule;
 import nl.tudelft.planningstool.database.bootstrapper.TestBootstrap;
+import org.jukito.JukitoRunner;
+import org.jukito.UseModules;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -16,13 +22,22 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class UserOccurrenceAPITest extends TestBase {
+@RunWith(JukitoRunner.class)
+@UseModules(DatabaseTestModule.class)
+public class UserOccurrenceAPITest {
 
     private static final String USER_UUID = "aba62cd5-caa6-4e42-a5d6-4909f03038bf";
 
     private static final String COURSE_UUID = "aba62cd5-caa6-4e42-a5d6-4909f03038bf";
 
     private static final SimpleDateFormat DAY_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+
+    @Rule
+    @Inject
+    public BootstrapRule bootstrapRule;
+
+    @Rule
+    public ExpectedException expected = ExpectedException.none();
 
     @Inject
     private UserOccurrenceAPI api;
