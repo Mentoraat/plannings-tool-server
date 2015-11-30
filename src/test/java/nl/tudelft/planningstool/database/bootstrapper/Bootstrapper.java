@@ -80,13 +80,9 @@ public class Bootstrapper {
 
         private String accessToken;
 
-        private UUID uuid;
+        private String uuid;
 
         private String status;
-
-        public void setUuid(String uuidString) {
-            uuid = UUID.fromString(uuidString);
-        }
 
     }
 

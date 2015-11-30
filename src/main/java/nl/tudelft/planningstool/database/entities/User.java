@@ -55,7 +55,7 @@ public class User implements AdminVerifiable, Serializable {
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
     @Column(name = "uuid", unique = true)
-    private UUID uuid;
+    private String uuid;
 
     @OneToMany(mappedBy = "user")
     private Set<CourseRelation> courses = Sets.newHashSet();

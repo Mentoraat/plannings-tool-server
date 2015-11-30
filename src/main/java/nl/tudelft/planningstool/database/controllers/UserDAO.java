@@ -22,13 +22,9 @@ public class UserDAO extends AbstractDAO<User> {
                 .singleResult(user));
     }
 
-    public User getFromUUID(UUID userId) {
+    public User getFromUUID(String userId) {
         return ensureExists(this.query().from(user)
                 .where(user.uuid.eq(userId))
                 .singleResult(user));
-    }
-
-    public User getFromUUID(String userId) {
-        return getFromUUID(UUID.fromString(userId));
     }
 }

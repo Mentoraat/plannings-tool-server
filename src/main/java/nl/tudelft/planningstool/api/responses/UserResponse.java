@@ -14,7 +14,7 @@ public class UserResponse {
 
     private String accessToken;
 
-    private UUID uuid;
+    private String uuid;
 
     public static UserResponse from(User user) {
         UserResponse response = new UserResponse();
