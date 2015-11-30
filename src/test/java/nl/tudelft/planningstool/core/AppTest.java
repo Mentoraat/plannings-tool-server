@@ -1,10 +1,12 @@
 package nl.tudelft.planningstool.core;
 
 import com.google.inject.Inject;
+import org.jukito.JukitoRunner;
 import org.junit.Test;
-import util.TestBase;
+import org.junit.runner.RunWith;
 
-public class AppTest extends TestBase {
+@RunWith(JukitoRunner.class)
+public class AppTest {
 
     @Inject
     private App app;
