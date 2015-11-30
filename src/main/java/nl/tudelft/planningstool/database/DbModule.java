@@ -63,18 +63,18 @@ public class DbModule extends AbstractModule {
 
     private void setDatabasePassword(final Properties properties)
             throws DatabaseConfigurationException {
-        final String databasePassword = getSystemEnvironmentVariable();
-
-        // This will be null if it is run in the test environment.
-        if (databasePassword != null) {
-            properties.setProperty(PASSWORD_PROPERTY_NAME, databasePassword);
-        }
-
-        // Make sure the property is set, else notify developer/admin the configuration is invalid
         if (properties.getProperty(PASSWORD_PROPERTY_NAME) == null) {
-            throw new DatabaseConfigurationException("The database password is not set."
-                    + "Make sure the environment contains the variable '"
-                    + ENVIRONMENT_DATABASE_VARIABLE_NAME + "'.");
+            final String databasePassword = getSystemEnvironmentVariable();
+
+            // This will be null if it is run in the test environment.
+            if (databasePassword != null) {
+                properties.setProperty(PASSWORD_PROPERTY_NAME, databasePassword);
+            }
+            else {
+                throw new DatabaseConfigurationException("The database password is not set."
+                        + "Make sure the environment contains the variable '"
+                        + ENVIRONMENT_DATABASE_VARIABLE_NAME + "'.");
+            }
         }
     }
 
