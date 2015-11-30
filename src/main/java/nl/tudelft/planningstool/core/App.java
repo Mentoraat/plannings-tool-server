@@ -61,10 +61,20 @@ public class App {
      * Stops the {@link App} server.
      */
     public void stopServer() {
+        server.setStopTimeout(10000L);;
         try {
-            this.server.stop();
-        } catch (final Exception e) {
-            log.warn(e.getMessage(), e);
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        server.stop();
+                    } catch (Exception ex) {
+                        System.out.println("Failed to stop Jetty");
+                    }
+                }
+            }.start();
+        } catch (Exception ex) {
+            System.out.println("Failed to stop Jetty");
         }
     }
 
