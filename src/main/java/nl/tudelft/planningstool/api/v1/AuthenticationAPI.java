@@ -2,6 +2,7 @@ package nl.tudelft.planningstool.api.v1;
 
 
 import com.google.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.Credentials;
 import nl.tudelft.planningstool.api.responses.TokenResponse;
 import nl.tudelft.planningstool.api.security.NotAUserException;
@@ -23,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
  * Provides Authentication API endpoints.
  */
 @Path("v1/authentication")
+@Slf4j
 public class AuthenticationAPI extends ResponseAPI{
 
     @Inject
@@ -81,7 +83,6 @@ public class AuthenticationAPI extends ResponseAPI{
 
         digest.update(output);
         BigInteger bg = new BigInteger(1, digest.digest());
-        System.out.println("\n\n\n" +bg.toString());
 
         if(user == null || !user.getHashedPassword().equals(bg.toString())) {
             throw new NotAUserException("Invalid authentication");

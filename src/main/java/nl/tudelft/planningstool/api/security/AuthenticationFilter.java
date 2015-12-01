@@ -1,6 +1,7 @@
 package nl.tudelft.planningstool.api.security;
 
 import com.google.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.v1.UserOccurrenceAPI;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
@@ -22,7 +23,15 @@ import java.io.IOException;
 @Secured
 @Provider
 @Priority(Priorities.AUTHENTICATION)
+@Slf4j
 public class AuthenticationFilter implements ContainerRequestFilter {
+
+    private final com.google.inject.Provider<UserDAO> userDAO;
+
+    @Inject
+    AuthenticationFilter(com.google.inject.Provider<UserDAO> userDAO) {
+        this.userDAO = userDAO;
+    }
 
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
@@ -43,7 +52,7 @@ public class AuthenticationFilter implements ContainerRequestFilter {
     }
 
     private void validateToken(String token) throws NotAuthorizedException{
-        User user = null; //this.userOccurrenceAPI.getUserFromAccessToken(token);
+        User user = this.userDAO.get().getFromAccessToken(token);
 
         if(user == null) {
             // Token is invalid for all users.

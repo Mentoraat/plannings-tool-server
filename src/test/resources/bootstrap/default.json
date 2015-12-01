@@ -152,9 +152,9 @@
   "users" : [
     {
       "name" : "Admin",
-      "accessToken" : "asdf",
+      "accessToken" : "AAAA-BBBB-CCCC-DDDD",
       "status" : "ADMIN",
-      "uuid" : "aba62cd5-caa6-4e42-a5d6-4909f03038bf",
+      "uuid" : "025e6e3e-7eea-44c3-b75a-5e959fad94e3",
       "hashedPassword" : "2892577026374761458263247122575697015978848410163910458228565991676461443889311235642147890010761473636186180526288329870323439937900272564777451599747153"
     }
   ]
