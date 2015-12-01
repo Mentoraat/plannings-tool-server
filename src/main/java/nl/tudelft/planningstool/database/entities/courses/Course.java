@@ -1,5 +1,6 @@
 package nl.tudelft.planningstool.database.entities.courses;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,7 +36,7 @@ public class Course implements Serializable {
     private Set<CourseRelation> users = Sets.newHashSet();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
-    private Set<Assignment> assignments = Sets.newHashSet();
+    private List<Assignment> assignments = Lists.newArrayList();
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Set<CourseOccurrence> occurrences = Sets.newHashSet();
