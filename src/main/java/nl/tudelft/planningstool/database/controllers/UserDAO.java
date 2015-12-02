@@ -3,9 +3,11 @@ package nl.tudelft.planningstool.database.controllers;
 import static nl.tudelft.planningstool.database.entities.QUser.user;
 
 import com.google.inject.Inject;
+import nl.tudelft.planningstool.api.responses.UserResponse;
 import nl.tudelft.planningstool.database.entities.User;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.UUID;
 
 public class UserDAO extends AbstractDAO<User> {
