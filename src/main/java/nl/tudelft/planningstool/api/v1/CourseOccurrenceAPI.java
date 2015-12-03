@@ -1,6 +1,7 @@
 package nl.tudelft.planningstool.api.v1;
 
 import nl.tudelft.planningstool.database.entities.User;
+import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.CourseOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -16,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TimeZone;
+import java.util.function.Consumer;
 
 @Path("v1/courses")
 public class CourseOccurrenceAPI extends ResponseAPI {
@@ -29,7 +31,32 @@ public class CourseOccurrenceAPI extends ResponseAPI {
     @PUT
     @Path("lectures")
     @Consumes("multipart/form-data")
+    public String uploadLectures(MultipartFormDataInput input) {
+        return parseFileInput(input, (sc) -> {
+            // Start of the week
+            sc.nextLine();
+            // Headers
+            sc.nextLine();
+
+            String s;
+            // Weeks are split by an empty line
+            while (sc.hasNextLine() && !(s = sc.nextLine()).equals("")) {
+                createOccurrenceFromLine(s);
+            }
+        });
+    }
+
+    @PUT
+    @Path("assignments")
+    @Consumes("multipart/form-data")
     public String uploadAssignments(MultipartFormDataInput input) {
+        return parseFileInput(input, (sc) -> {
+            Assignment assignment = new Assignment();
+        });
+    }
+
+    private String parseFileInput(MultipartFormDataInput input,
+                                  ScannerConsumer parser) {
         List<InputPart> inputParts = input.getFormDataMap().get("file");
 
         for (InputPart part : inputParts) {
@@ -37,18 +64,8 @@ public class CourseOccurrenceAPI extends ResponseAPI {
                 String fileContent = part.getBodyAsString();
                 Scanner sc = new Scanner(fileContent);
 
-                // Each week
                 while (sc.hasNextLine()) {
-                    // Start of the week
-                    sc.nextLine();
-                    // Headers
-                    sc.nextLine();
-
-                    String s;
-                    // Weeks are split by an empty line
-                    while (sc.hasNextLine() && !(s = sc.nextLine()).equals("")) {
-                        createOccurrenceFromLine(s);
-                    }
+                    parser.scan(sc);
                 }
             } catch (IOException e) {
                 throw new IllegalArgumentException("No file attached");
@@ -57,7 +74,7 @@ public class CourseOccurrenceAPI extends ResponseAPI {
             }
         }
 
-        return "Successfully uploaded";
+        return "Upload successful";
     }
 
     private void createOccurrenceFromLine(String s) throws ParseException {
@@ -83,5 +100,10 @@ public class CourseOccurrenceAPI extends ResponseAPI {
         Course course = this.courseDAO.getFromEdition(courseId, Integer.valueOf(day.split("-")[0]));
         course.addOccurrence(o);
         this.courseDAO.merge(course);
+    }
+
+    private interface ScannerConsumer {
+
+        void scan(Scanner sc) throws ParseException;
     }
 }
