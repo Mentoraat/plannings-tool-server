@@ -30,12 +30,6 @@ import java.util.stream.Collectors;
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/courses/assignments")
 public class UserAssignmentAPI extends ResponseAPI {
 
-    private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
-
-    static {
-        TIME_FORMATTER.setTimeZone(TimeZone.getTimeZone("Amsterdam"));
-    }
-
     /**
      * Get all the assignments for the provided user.
      * Returns only the assignments that have not been planned yet (e.g. do not have an occurrence relation with
@@ -85,66 +79,6 @@ public class UserAssignmentAPI extends ResponseAPI {
 
         int finished = map.get(UserOccurrence.OccurrenceStatus.FINISHED).get();
         return new int[] {finished, (int) total - finished};
-    }
-
-    @POST
-    @Consumes("multipart/form-data")
-    public String uploadAssignments(@PathParam("userId") String userId,
-                                    MultipartFormDataInput input) {
-        List<InputPart> inputParts = input.getFormDataMap().get("file");
-
-        User user = this.userDAO.getFromUUID(userId);
-        for (InputPart part : inputParts) {
-            try {
-                String fileContent = part.getBodyAsString();
-                Scanner sc = new Scanner(fileContent);
-
-                // Each week
-                while (sc.hasNextLine()) {
-                    // Start of the week
-                    sc.nextLine();
-                    // Headers
-                    sc.nextLine();
-
-                    String s;
-                    // Weeks are split by an empty line
-                    while (sc.hasNextLine() && !(s = sc.nextLine()).equals("")) {
-                        createOccurrenceFromLine(s);
-                    }
-                }
-            } catch (IOException e) {
-                throw new IllegalArgumentException("No file attached");
-            } catch (ParseException e) {
-                throw new IllegalArgumentException("Invalid file format");
-            }
-        }
-
-        return "Successfully uploaded";
-    }
-
-    private void createOccurrenceFromLine(String s) throws ParseException {
-        String[] parts = s.split(";");
-
-        for (int i = 0; i < parts.length; i++) {
-            parts[i] = parts[i].replaceAll("\"", "");
-        }
-
-        String courseId = parts[0];
-        String day = parts[4];
-        String startTimeString = parts[5];
-        String[] duration = parts[9].split(":");
-
-        long startTime = TIME_FORMATTER.parse(day + "-" + startTimeString).getTime();
-        double durationLong = Double.valueOf(duration[0]) + (Double.valueOf(duration[1]) / 60.0);
-
-        CourseOccurrence o = new CourseOccurrence();
-        o.plan(startTime, durationLong);
-
-        // TODO: Handle not-found course
-        // TODO: Specify how to find year
-        Course course = this.courseDAO.getFromEdition(courseId, Integer.valueOf(day.split("-")[0]));
-        course.addOccurrence(o);
-        this.courseDAO.merge(course);
     }
 
     private ListResponse<AssignmentResponse> createListResponse(Collection<Assignment> assignments) {
