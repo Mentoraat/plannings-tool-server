@@ -39,4 +39,10 @@ public class UserDAO extends AbstractDAO<User> {
                 .where(user.accessToken.eq(token))
                 .singleResult(user));
     }
+
+    public boolean existsWithUsername(String username) {
+        return this.query().from(user)
+                .where(user.name.eq(username))
+                .singleResult(user) != null;
+    }
 }

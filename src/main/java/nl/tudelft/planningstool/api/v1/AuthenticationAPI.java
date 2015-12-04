@@ -20,6 +20,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.UUID;
 
 
 /**
@@ -50,6 +51,24 @@ public class AuthenticationAPI extends ResponseAPI{
         }
     }
 
+    @POST
+    @Path("register")
+    public Response registerUser(Credentials credentials) throws NoSuchAlgorithmException {
+        if (this.userDAO.existsWithUsername(credentials.getUsername())) {
+            throw new IllegalArgumentException("User already exists.");
+        }
+
+        User user = new User();
+        user.setAdminStatus(User.AdminStatus.USER);
+        user.setHashedPassword(this.hashPassword(credentials.getPassword()));
+        user.setName(credentials.getUsername());
+        user.setUuid(UUID.randomUUID().toString());
+
+        this.userDAO.persist(user);
+
+        return this.authenticateUser(credentials);
+    }
+
     private TokenResponse issueToken(User user) {
         TokenResponse response = new TokenResponse();
         long oneDayFromNow = System.currentTimeMillis() + 86_400_000;
@@ -75,18 +94,19 @@ public class AuthenticationAPI extends ResponseAPI{
         // Fetch user with given username
         User user = userDAO.getFromUsername(username);
 
-        // Hash password with SHA-512
-        MessageDigest digest = MessageDigest.getInstance("SHA-512");
-        byte[] output = digest.digest(password.getBytes());
-
-        digest.update(output);
-        BigInteger bg = new BigInteger(1, digest.digest());
-
-        if(user == null || !user.getHashedPassword().equals(bg.toString())) {
+        if(user == null || !user.getHashedPassword().equals(hashPassword(password))) {
             throw new NotAUserException("Invalid authentication");
         }
 
         return user;
+    }
+
+    private String hashPassword(String password) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-512");
+        byte[] output = digest.digest(password.getBytes());
+
+        digest.update(output);
+        return new BigInteger(1, digest.digest()).toString();
     }
 
 }
