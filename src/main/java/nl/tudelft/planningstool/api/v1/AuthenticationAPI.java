@@ -18,6 +18,8 @@ import javax.ws.rs.core.Response;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Random;
 
 
 /**
@@ -31,17 +33,15 @@ public class AuthenticationAPI extends ResponseAPI{
     protected UserDAO userDAO;
 
     @POST
-    @Produces("application/json")
-    @Consumes("application/json")
     public Response authenticateUser(Credentials credentials) {
         String username = credentials.getUsername();
         String password = credentials.getPassword();
 
         // Authenticate the user, issue a token and return a response
         try {
-            authenticate(username, password);
+            User user = authenticate(username, password);
 
-            TokenResponse token = issueToken(username);
+            TokenResponse token = issueToken(user);
 
             return Response.ok(token).build();
         }
@@ -50,30 +50,28 @@ public class AuthenticationAPI extends ResponseAPI{
         }
     }
 
-    private TokenResponse issueToken(String username) {
+    private TokenResponse issueToken(User user) {
         TokenResponse response = new TokenResponse();
         long oneDayFromNow = System.currentTimeMillis() + 86_400_000;
-        String token = generateToken(username);
+        String token = generateToken();
 
         response.setToken(token);
         response.setEndOfValidity(oneDayFromNow);
+        response.setUuid(user.getUuid());
 
         // FIXME: Store validity in User table
-        User user = userDAO.getFromUsername(username);
         user.setAccessToken(token);
         userDAO.merge(user);
 
         return response;
     }
 
-    private String generateToken(String username) {
-        return "AAAA-BBBB-CCCC-DDDD"; //FIXME
-
-//        Random random = new SecureRandom();
-//        return new BigInteger(130, random).toString(32);
+    private String generateToken() {
+        Random random = new SecureRandom();
+        return new BigInteger(130, random).toString(32);
     }
 
-    private void authenticate(String username, String password) throws Exception{
+    private User authenticate(String username, String password) throws Exception{
         // Fetch user with given username
         User user = userDAO.getFromUsername(username);
 
@@ -87,7 +85,8 @@ public class AuthenticationAPI extends ResponseAPI{
         if(user == null || !user.getHashedPassword().equals(bg.toString())) {
             throw new NotAUserException("Invalid authentication");
         }
-        return;
+
+        return user;
     }
 
 }

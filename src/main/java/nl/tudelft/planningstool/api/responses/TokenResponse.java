@@ -11,4 +11,5 @@ import java.io.Serializable;
 public class TokenResponse implements Serializable {
     private String token;
     private long endOfValidity;
+    private String uuid;
 }
