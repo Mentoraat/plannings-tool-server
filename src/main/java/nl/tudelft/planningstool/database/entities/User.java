@@ -1,6 +1,10 @@
 package nl.tudelft.planningstool.database.entities;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 import javax.ws.rs.ForbiddenException;
 
 import com.google.common.collect.Sets;
@@ -9,7 +13,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -17,7 +21,12 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(
+        name = "users",
+        indexes = {
+                @Index(columnList = "uuid", unique = true),
+                @Index(columnList = "name", unique = true)
+        })
 @EqualsAndHashCode(of = {
         "id"
 })

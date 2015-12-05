@@ -9,11 +9,7 @@ import nl.tudelft.planningstool.api.security.NotAUserException;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -34,7 +30,7 @@ public class AuthenticationAPI extends ResponseAPI{
     protected UserDAO userDAO;
 
     @POST
-    public Response authenticateUser(Credentials credentials) {
+    public TokenResponse authenticateUser(Credentials credentials) {
         String username = credentials.getUsername();
         String password = credentials.getPassword();
 
@@ -42,18 +38,17 @@ public class AuthenticationAPI extends ResponseAPI{
         try {
             User user = authenticate(username, password);
 
-            TokenResponse token = issueToken(user);
-
-            return Response.ok(token).build();
+            return issueToken(user);
         }
         catch (Exception e) {
-            return Response.status(Response.Status.UNAUTHORIZED).build();
+            // TODO: Add brute-force prevention
+            throw new NotAuthorizedException("Invalid credentials.");
         }
     }
 
     @POST
     @Path("register")
-    public Response registerUser(Credentials credentials) throws NoSuchAlgorithmException {
+    public TokenResponse registerUser(Credentials credentials) throws NoSuchAlgorithmException {
         if (this.userDAO.existsWithUsername(credentials.getUsername())) {
             throw new IllegalArgumentException("User already exists.");
         }
@@ -70,17 +65,17 @@ public class AuthenticationAPI extends ResponseAPI{
     }
 
     private TokenResponse issueToken(User user) {
-        TokenResponse response = new TokenResponse();
         long oneDayFromNow = System.currentTimeMillis() + 86_400_000;
         String token = generateToken();
-
-        response.setToken(token);
-        response.setEndOfValidity(oneDayFromNow);
-        response.setUuid(user.getUuid());
 
         // FIXME: Store validity in User table
         user.setAccessToken(token);
         userDAO.merge(user);
+
+        TokenResponse response = new TokenResponse();
+        response.setToken(token);
+        response.setEndOfValidity(oneDayFromNow);
+        response.setUuid(user.getUuid());
 
         return response;
     }
@@ -90,7 +85,7 @@ public class AuthenticationAPI extends ResponseAPI{
         return new BigInteger(130, random).toString(32);
     }
 
-    private User authenticate(String username, String password) throws Exception{
+    private User authenticate(String username, String password) throws Exception {
         User user = userDAO.getFromUsername(username);
 
         if(user == null || !user.getHashedPassword().equals(hashPassword(password))) {
