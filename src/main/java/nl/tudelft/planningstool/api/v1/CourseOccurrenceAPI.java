@@ -1,5 +1,6 @@
 package nl.tudelft.planningstool.api.v1;
 
+import nl.tudelft.planningstool.api.security.Secured;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.CourseOccurrence;
@@ -7,10 +8,7 @@ import nl.tudelft.planningstool.database.entities.courses.Course;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +18,7 @@ import java.util.TimeZone;
 import java.util.function.Consumer;
 
 @Path("v1/courses")
+@Secured
 public class CourseOccurrenceAPI extends ResponseAPI {
 
     private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
@@ -28,7 +27,7 @@ public class CourseOccurrenceAPI extends ResponseAPI {
         TIME_FORMATTER.setTimeZone(TimeZone.getTimeZone("Amsterdam"));
     }
 
-    @PUT
+    @POST
     @Path("lectures")
     @Consumes("multipart/form-data")
     public String uploadLectures(MultipartFormDataInput input) {
@@ -46,7 +45,7 @@ public class CourseOccurrenceAPI extends ResponseAPI {
         });
     }
 
-    @PUT
+    @POST
     @Path("assignments")
     @Consumes("multipart/form-data")
     public String uploadAssignments(MultipartFormDataInput input) {
