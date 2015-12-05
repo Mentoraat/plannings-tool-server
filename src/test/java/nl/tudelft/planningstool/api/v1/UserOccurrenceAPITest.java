@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @UseModules(DatabaseTestModule.class)
 public class UserOccurrenceAPITest {
 
-    private static final String USER_UUID = "aba62cd5-caa6-4e42-a5d6-4909f03038bf";
+    private static final String USER_UUID = "025e6e3e-7eea-44c3-b75a-5e959fad94e3";
 
     private static final String COURSE_UUID = "aba62cd5-caa6-4e42-a5d6-4909f03038bf";
 

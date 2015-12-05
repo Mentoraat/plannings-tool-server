@@ -118,6 +118,7 @@ public class UserCreationTest {
         user.setAccessToken(accessToken);
         user.setName(name);
         user.setCourses(Sets.newHashSet());
+        user.setHashedPassword("asdf");
 
         return user;
     }

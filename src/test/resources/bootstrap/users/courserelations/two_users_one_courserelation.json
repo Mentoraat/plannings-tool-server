@@ -23,11 +23,13 @@
   "users" : [
     {
       "name" : "Admin",
-      "accessToken" : "asdf"
+      "accessToken" : "asdf",
+      "hashedPassword" : "abc"
     },
     {
       "name" : "Admin2",
-      "accessToken" : "fdas"
+      "accessToken" : "fdas",
+      "hashedPassword" : "abc"
     }
   ]
 }

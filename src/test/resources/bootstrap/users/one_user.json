@@ -2,7 +2,8 @@
   "users" : [
     {
       "name" : "Admin",
-      "accessToken" : "asdf"
+      "accessToken" : "asdf",
+      "hashedPassword" : "abc"
     }
   ]
 }

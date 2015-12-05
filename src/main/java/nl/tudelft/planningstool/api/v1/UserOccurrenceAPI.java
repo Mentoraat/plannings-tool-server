@@ -11,6 +11,7 @@ import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.CourseOccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.UserOccurrenceResponse;
+import nl.tudelft.planningstool.api.security.Secured;
 import nl.tudelft.planningstool.database.embeddables.CourseEdition;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
@@ -75,13 +76,10 @@ public class UserOccurrenceAPI extends ResponseAPI {
      * @return The Occurrence, if succesfully created.
      */
     @POST
+    @Secured
     public UserOccurrenceResponse create(@PathParam("userId") String userId,
                                          UserOccurrenceResponse data) {
         User user = this.userDAO.getFromUUID(userId);
-
-        if (!user.getAccessToken().equals(data.getUser().getAccessToken())) {
-            throw new ForbiddenException("Invalid user accessToken");
-        }
 
         UserOccurrence occurrence = new UserOccurrence();
         occurrence.setStart_time(data.getStartTime());

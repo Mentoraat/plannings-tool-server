@@ -3,6 +3,7 @@ package nl.tudelft.planningstool.api.v1;
 import com.google.common.collect.Maps;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
+import nl.tudelft.planningstool.api.security.Secured;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
@@ -32,6 +33,7 @@ public class UserAssignmentAPI extends ResponseAPI {
      * @return A list of assigments.
      */
     @GET
+    @Secured
     public ListResponse<AssignmentResponse> get(@PathParam("userId") String userId) {
         User user = this.userDAO.getFromUUID(userId);
 
