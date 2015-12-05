@@ -12,17 +12,11 @@ public class UserResponse {
 
     private String name;
 
-    private String accessToken;
-
-    private String uuid;
-
     public static UserResponse from(User user) {
         UserResponse response = new UserResponse();
 
         response.setId(user.getId());
         response.setName(user.getName());
-        response.setAccessToken(user.getAccessToken());
-        response.setUuid(user.getUuid());
 
         return response;
     }

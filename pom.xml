@@ -208,9 +208,6 @@
             <resource>
                 <directory>src/main/resources</directory>
             </resource>
-            <resource>
-                <directory>target/metamodel</directory>
-            </resource>
         </resources>
          <plugins>
             <plugin>
@@ -256,6 +253,26 @@
                          <configuration>
                              <addOutputDirectory>false</addOutputDirectory>
                              <sourceDirectory>src/main/java</sourceDirectory>
+                         </configuration>
+                     </execution>
+                 </executions>
+             </plugin>
+
+             <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>build-helper-maven-plugin</artifactId>
+                 <version>1.7</version>
+                 <executions>
+                     <execution>
+                         <id>add-source</id>
+                         <phase>generate-sources</phase>
+                         <goals>
+                             <goal>add-source</goal>
+                         </goals>
+                         <configuration>
+                             <sources>
+                                 <source>target/metamodel</source>
+                             </sources>
                          </configuration>
                      </execution>
                  </executions>

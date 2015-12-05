@@ -91,7 +91,6 @@ public class AuthenticationAPI extends ResponseAPI{
     }
 
     private User authenticate(String username, String password) throws Exception{
-        // Fetch user with given username
         User user = userDAO.getFromUsername(username);
 
         if(user == null || !user.getHashedPassword().equals(hashPassword(password))) {

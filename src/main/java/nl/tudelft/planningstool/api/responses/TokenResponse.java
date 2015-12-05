@@ -9,7 +9,10 @@ import java.io.Serializable;
  */
 @Data
 public class TokenResponse implements Serializable {
+
     private String token;
+
     private long endOfValidity;
+
     private String uuid;
 }
