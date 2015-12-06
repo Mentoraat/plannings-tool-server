@@ -224,7 +224,7 @@ public class Bootstrapper {
 
         course.setExamTime(getUnixFromHour(bCourse.getExamTime()));
         if (bCourse.getUuid() != null) {
-            course.setUuid(bCourse.getUuid());
+            course.setUuid(bCourse.getUuid().toString());
         }
 
         course.setOccurrences(checkForNull(bCourse.getOccurrences(), (o) -> createCourseOccurrence(o, course)));

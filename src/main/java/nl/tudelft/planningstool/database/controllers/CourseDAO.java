@@ -22,13 +22,9 @@ public class CourseDAO extends AbstractDAO<Course> {
                 .singleResult(course));
     }
 
-    public Course getFromUUID(UUID courseId) {
+    public Course getFromUUID(String courseId) {
         return ensureExists(this.query().from(course)
                 .where(course.uuid.eq(courseId))
                 .singleResult(course));
-    }
-
-    public Course getFromUUID(String courseId) {
-        return getFromUUID(UUID.fromString(courseId));
     }
 }

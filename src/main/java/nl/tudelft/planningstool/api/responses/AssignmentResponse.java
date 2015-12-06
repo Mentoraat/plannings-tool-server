@@ -41,7 +41,7 @@ public class AssignmentResponse {
 
         private CourseEditionResponse edition;
 
-        private UUID uuid;
+        private String uuid;
 
         private long examTime;
 
