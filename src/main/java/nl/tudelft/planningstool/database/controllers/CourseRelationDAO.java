@@ -3,6 +3,7 @@ package nl.tudelft.planningstool.database.controllers;
 import static nl.tudelft.planningstool.database.entities.courses.QCourseRelation.courseRelation;
 
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
@@ -16,6 +17,7 @@ public class CourseRelationDAO extends AbstractDAO<CourseRelation> {
         super(entityManager);
     }
 
+    @Transactional
     public CourseRelation getCourseRelationForUser(User user, Course course) {
         return this.ensureExists(this.query().from(courseRelation)
                 .where(courseRelation.user.eq(user)

@@ -3,6 +3,7 @@ package nl.tudelft.planningstool.database.controllers;
 import static nl.tudelft.planningstool.database.entities.assignments.QAssignment.assignment;
 
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 
 import javax.persistence.EntityManager;
@@ -14,6 +15,7 @@ public class AssignmentDAO extends AbstractDAO<Assignment> {
         super(entityManager);
     }
 
+    @Transactional
     public Assignment getFromCourseWithId(String courseId, int year, int assignmentid) {
         return ensureExists(this.query().from(assignment)
                 .where(assignment.course.edition.courseId.eq(courseId)

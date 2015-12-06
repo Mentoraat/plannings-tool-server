@@ -3,6 +3,7 @@ package nl.tudelft.planningstool.database.controllers;
 import static nl.tudelft.planningstool.database.entities.QUser.user;
 
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import nl.tudelft.planningstool.api.responses.UserResponse;
 import nl.tudelft.planningstool.database.entities.User;
 
@@ -17,31 +18,35 @@ public class UserDAO extends AbstractDAO<User> {
         super(entityManager);
     }
 
-
+    @Transactional
     public User getFromId(int i) {
         return ensureExists(this.query().from(user)
                 .where(user.id.eq(i))
                 .singleResult(user));
     }
 
+    @Transactional
     public User getFromUUID(String userId) {
         return ensureExists(this.query().from(user)
                 .where(user.uuid.eq(userId))
                 .singleResult(user));
     }
 
+    @Transactional
     public User getFromUsername(String username) {
         return ensureExists(this.query().from(user)
                 .where(user.name.eq(username))
                 .singleResult(user));
     }
 
+    @Transactional
     public User getFromAccessToken(String token) {
         return ensureExists(this.query().from(user)
                 .where(user.accessToken.eq(token))
                 .singleResult(user));
     }
 
+    @Transactional
     public boolean existsWithUsername(String username) {
         return this.query().from(user)
                 .where(user.name.eq(username))
