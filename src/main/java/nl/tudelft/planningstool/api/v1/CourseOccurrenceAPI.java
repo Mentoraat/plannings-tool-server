@@ -50,7 +50,22 @@ public class CourseOccurrenceAPI extends ResponseAPI {
     @Consumes("multipart/form-data")
     public String uploadAssignments(MultipartFormDataInput input) {
         return parseFileInput(input, (sc) -> {
+            String[] parts = sc.nextLine().split(";");
+
+            for (int i = 0; i < parts.length; i++) {
+                parts[i] = parts[i].replaceAll("\"", "");
+            }
+
             Assignment assignment = new Assignment();
+            assignment.setLength(Integer.valueOf(parts[2]));
+            assignment.setName(parts[3]);
+            assignment.setDescription(parts[4]);
+            assignment.setDeadlineAsWeek(Integer.valueOf(parts[5]));
+
+            Course course = this.courseDAO.getFromEdition(parts[0], Integer.valueOf(parts[1]));
+            course.addAssignment(assignment);
+
+            this.courseDAO.merge(course);
         });
     }
 
@@ -88,7 +103,11 @@ public class CourseOccurrenceAPI extends ResponseAPI {
         String startTimeString = parts[5];
         String[] duration = parts[9].split(":");
 
-        long startTime = TIME_FORMATTER.parse(day + "-" + startTimeString).getTime();
+        long startTime;
+
+        synchronized (TIME_FORMATTER) {
+            startTime = TIME_FORMATTER.parse(day + "-" + startTimeString).getTime();
+        }
         double durationLong = Double.valueOf(duration[0]) + (Double.valueOf(duration[1]) / 60.0);
 
         CourseOccurrence o = new CourseOccurrence();

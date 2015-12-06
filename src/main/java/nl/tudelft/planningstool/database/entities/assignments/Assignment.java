@@ -2,10 +2,15 @@ package nl.tudelft.planningstool.database.entities.assignments;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 @Data
 @Entity
@@ -60,6 +65,25 @@ public class Assignment implements Serializable {
         if (Long.compare(this.getDeadline(), DEFAULT_DEADLINE) == 0) {
             this.setDeadline(course.getExamTime());
         }
+    }
+
+    private static final SimpleDateFormat FORMAT = new SimpleDateFormat("yyyyww");
+
+    public void setDeadlineAsWeek(int week) throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        int year = cal.get(Calendar.YEAR);
+
+        if (cal.get(Calendar.WEEK_OF_YEAR) > week) {
+            year++;
+        }
+
+        Date date;
+
+        synchronized (FORMAT) {
+            date = FORMAT.parse(String.valueOf(year) + String.valueOf(week));
+        }
+
+        this.setDeadline(date.getTime());
     }
 
     @Data

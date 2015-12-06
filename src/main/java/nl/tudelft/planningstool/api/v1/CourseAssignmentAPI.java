@@ -2,6 +2,7 @@ package nl.tudelft.planningstool.api.v1;
 
 import com.google.common.collect.Lists;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
+import nl.tudelft.planningstool.api.security.Secured;
 import nl.tudelft.planningstool.database.embeddables.CourseEdition;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
@@ -13,9 +14,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
+import java.text.ParseException;
 import java.util.stream.Collectors;
 
-@Path("v1/users/USER-{userId: (\\d|\\w|-)+}/courses/{courseId: (\\d|\\w)+}-{year: \\d+}/assignments")
+@Path("v1/users/USER-{userId: (\\d|\\w|-)+}/courses/{courseId: .+}-{year: \\d+}/assignments")
+@Secured
 public class CourseAssignmentAPI extends ResponseAPI {
 
     @POST
@@ -39,7 +42,11 @@ public class CourseAssignmentAPI extends ResponseAPI {
         final Course course = relation.getCourse();
 
         Assignment assignment = new Assignment();
-        assignment.setDeadline(response.getDeadline());
+        try {
+            assignment.setDeadlineAsWeek((int) response.getDeadline());
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Invalid deadline format.");
+        }
         assignment.setDescription(response.getDescription());
         assignment.setLength(response.getLength());
         assignment.setName(response.getName());
