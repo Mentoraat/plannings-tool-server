@@ -32,6 +32,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/occurrences")
+@Secured
 public class UserOccurrenceAPI extends ResponseAPI {
 
     private static final List<String> COLORS = Lists.newArrayList("#ff6447", "#5441b0", "#708090");
@@ -76,7 +77,6 @@ public class UserOccurrenceAPI extends ResponseAPI {
      * @return The Occurrence, if succesfully created.
      */
     @POST
-    @Secured
     public UserOccurrenceResponse create(@PathParam("userId") String userId,
                                          UserOccurrenceResponse data) {
         User user = this.userDAO.getFromUUID(userId);

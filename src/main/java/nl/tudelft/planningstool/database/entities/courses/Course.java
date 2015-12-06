@@ -51,6 +51,13 @@ public class Course implements Serializable {
         this.getAssignments().add(assignment);
     }
 
+    public void addOccurrence(CourseOccurrence o) {
+        o.setId(this.getOccurrences().size() + 1);
+        o.setCourse(this);
+
+        this.getOccurrences().add(o);
+    }
+
     public Assignment getAssignment(int assignmentId) {
         for (Assignment assignment : this.getAssignments()) {
             if (assignment.getId().equals(assignmentId)) {

@@ -6,14 +6,20 @@ import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.security.Secured;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.CourseOccurrence;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.Occurrence;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
+import org.jboss.resteasy.plugins.providers.multipart.InputPart;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -22,6 +28,7 @@ import java.util.stream.Collectors;
  * API end-point to provide assignments for an user.
  */
 @Path("v1/users/USER-{userId: (\\d|\\w|-)+}/courses/assignments")
+@Secured
 public class UserAssignmentAPI extends ResponseAPI {
 
     /**
@@ -33,7 +40,6 @@ public class UserAssignmentAPI extends ResponseAPI {
      * @return A list of assigments.
      */
     @GET
-    @Secured
     public ListResponse<AssignmentResponse> get(@PathParam("userId") String userId) {
         User user = this.userDAO.getFromUUID(userId);
 

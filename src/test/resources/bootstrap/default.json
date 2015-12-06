@@ -147,6 +147,54 @@
           "length" : 4
         }
       ]
+    },
+    {
+      "edition" : {
+        "courseId" : "Baggage Handling System Technology and Operation",
+        "year" : 2015
+      },
+      "assignments" : [],
+      "users" : [
+        {
+          "id" : 1,
+          "role" : "STUDENT",
+          "occurrences" : []
+        }
+      ],
+      "examTime" : 50,
+      "occurrences" : []
+    },
+    {
+      "edition" : {
+        "courseId" : "Strategic Planning for Airport Systems",
+        "year" : 2015
+      },
+      "assignments" : [],
+      "users" : [
+        {
+          "id" : 1,
+          "role" : "STUDENT",
+          "occurrences" : []
+        }
+      ],
+      "examTime" : 50,
+      "occurrences" : []
+    },
+    {
+      "edition" : {
+        "courseId" : "Microwave Sensors and Radars for Airport Applications",
+        "year" : 2015
+      },
+      "assignments" : [],
+      "users" : [
+        {
+          "id" : 1,
+          "role" : "STUDENT",
+          "occurrences" : []
+        }
+      ],
+      "examTime" : 50,
+      "occurrences" : []
     }
   ],
   "users" : [
