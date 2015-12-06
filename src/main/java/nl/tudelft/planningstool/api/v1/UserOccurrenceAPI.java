@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * API end-point to provide occurrences for an user.
  */
 @Slf4j
-@Path("v1/users/USER-{userId: (\\d|\\w|-)+}/occurrences")
+@Path("v1/users/USER-{userId: .+}/occurrences")
 @Secured
 public class UserOccurrenceAPI extends ResponseAPI {
 

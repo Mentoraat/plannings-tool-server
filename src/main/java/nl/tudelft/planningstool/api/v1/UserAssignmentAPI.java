@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * API end-point to provide assignments for an user.
  */
-@Path("v1/users/USER-{userId: (\\d|\\w|-)+}/courses/assignments")
+@Path("v1/users/USER-{userId: .+}/courses/assignments")
 @Secured
 public class UserAssignmentAPI extends ResponseAPI {
 

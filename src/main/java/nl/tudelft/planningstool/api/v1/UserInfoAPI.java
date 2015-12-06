@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-@Path("v1/users/USER-{userId: (\\d|\\w|-)+}")
+@Path("v1/users/USER-{userId: .+}")
 public class UserInfoAPI extends ResponseAPI {
 
     private static final List<String> COLORS = Lists.newArrayList("#ff6447", "#5441b0", "#708090");

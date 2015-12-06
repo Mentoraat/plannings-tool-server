@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import java.text.ParseException;
 import java.util.stream.Collectors;
 
-@Path("v1/users/USER-{userId: (\\d|\\w|-)+}/courses/{courseId: .+}-{year: \\d+}/assignments")
+@Path("v1/users/USER-{userId: .+}/courses/{courseId: .+}-{year: \\d+}/assignments")
 @Secured
 public class CourseAssignmentAPI extends ResponseAPI {
 
