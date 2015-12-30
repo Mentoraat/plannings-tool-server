@@ -7,7 +7,7 @@ import com.google.inject.persist.Transactional;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 
 import javax.persistence.EntityManager;
-import java.util.UUID;
+import java.util.List;
 
 public class CourseDAO extends AbstractDAO<Course> {
 
@@ -23,6 +23,15 @@ public class CourseDAO extends AbstractDAO<Course> {
                         .and(course.edition.courseId.eq(courseId)))
                 .singleResult(course));
     }
+
+    @Transactional
+    public List<Course> getAll() {
+        return this.query()
+                .from(course)
+                .list(course);
+
+    }
+
 
     @Transactional
     public Course getFromUUID(String courseId) {

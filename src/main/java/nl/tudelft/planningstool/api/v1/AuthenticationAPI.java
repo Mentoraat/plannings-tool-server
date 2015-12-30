@@ -8,6 +8,7 @@ import nl.tudelft.planningstool.api.responses.TokenResponse;
 import nl.tudelft.planningstool.api.security.NotAUserException;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
+import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 
 import javax.ws.rs.*;
 
@@ -58,6 +59,12 @@ public class AuthenticationAPI extends ResponseAPI{
         user.setHashedPassword(this.hashPassword(credentials.getPassword()));
         user.setName(credentials.getUsername());
         user.setUuid(UUID.randomUUID().toString());
+
+        this.courseDAO.getAll().forEach(course -> {
+            CourseRelation rel = new CourseRelation();
+            rel.setCourse(course);
+            user.addCourseRelation(rel);
+        });
 
         this.userDAO.persist(user);
 
