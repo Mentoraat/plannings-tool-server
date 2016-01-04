@@ -26,11 +26,13 @@ public class Course implements Serializable {
     @EmbeddedId
     private CourseEdition edition;
 
+    @Column(name = "courseName", nullable = true)
+    private String courseName;
+
     @GeneratedValue(generator = "uuid")
     @GenericGenerator(name = "uuid", strategy = "uuid")
     @Column(name = "uuid", unique = true)
     private String uuid;
-
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
     private Set<CourseRelation> users = Sets.newHashSet();

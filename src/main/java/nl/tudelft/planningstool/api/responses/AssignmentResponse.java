@@ -3,9 +3,6 @@ package nl.tudelft.planningstool.api.responses;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
-import nl.tudelft.planningstool.database.entities.courses.Course;
-
-import java.util.UUID;
 
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -13,7 +10,7 @@ public class AssignmentResponse {
 
     private Integer id;
 
-    private AssignmentCourseResponse course;
+    private CourseResponse course;
 
     private String name;
 
@@ -28,7 +25,7 @@ public class AssignmentResponse {
 
         response.setId(assignment.getId());
         response.setName(assignment.getName());
-        response.setCourse(AssignmentCourseResponse.from(assignment.getCourse()));
+        response.setCourse(CourseResponse.from(assignment.getCourse()));
         response.setLength(assignment.getLength());
         response.setDeadline(assignment.getDeadline());
         response.setDescription(assignment.getDescription());
@@ -36,23 +33,4 @@ public class AssignmentResponse {
         return response;
     }
 
-    @Data
-    public static class AssignmentCourseResponse {
-
-        private CourseEditionResponse edition;
-
-        private String uuid;
-
-        private long examTime;
-
-        public static AssignmentCourseResponse from(Course course) {
-            AssignmentCourseResponse response = new AssignmentCourseResponse();
-
-            response.setUuid(course.getUuid());
-            response.setEdition(CourseEditionResponse.from(course.getEdition()));
-            response.setExamTime(course.getExamTime());
-
-            return response;
-        }
-    }
 }

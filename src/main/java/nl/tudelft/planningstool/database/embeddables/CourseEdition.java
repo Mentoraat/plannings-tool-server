@@ -1,6 +1,7 @@
 package nl.tudelft.planningstool.database.embeddables;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

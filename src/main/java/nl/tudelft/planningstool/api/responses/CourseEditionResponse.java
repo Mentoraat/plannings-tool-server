@@ -10,6 +10,8 @@ public class CourseEditionResponse implements Comparable<CourseEditionResponse> 
 
     private int year;
 
+    private String courseName;
+
     public static CourseEditionResponse from(CourseEdition edition) {
         CourseEditionResponse response = new CourseEditionResponse();
 

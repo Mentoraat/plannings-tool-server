@@ -150,7 +150,8 @@
     },
     {
       "edition" : {
-        "courseId" : "Baggage Handling System Technology and Operation",
+        "courseId" : "BHLR",
+        "courseName" : "Baggage Handling System Technology and Operation",
         "year" : 2015
       },
       "assignments" : [],
@@ -166,7 +167,8 @@
     },
     {
       "edition" : {
-        "courseId" : "Strategic Planning for Airport Systems",
+        "courseId" : "SPLR",
+        "courseName" : "Strategic Planning for Airport Systems",
         "year" : 2015
       },
       "assignments" : [],
@@ -182,7 +184,8 @@
     },
     {
       "edition" : {
-        "courseId" : "Microwave Sensors and Radars for Airport Applications",
+        "courseId" : "MWLR",
+        "courseName" : "Microwave Sensors and Radars for Airport Applications",
         "year" : 2015
       },
       "assignments" : [],

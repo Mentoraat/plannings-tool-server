@@ -143,6 +143,8 @@ public class Bootstrapper {
         private String courseId;
 
         private int year;
+
+        private String courseName = "";
     }
 
     @Data
@@ -222,7 +224,9 @@ public class Bootstrapper {
         edition.setYear(bCourse.getEdition().getYear());
         course.setEdition(edition);
 
+        course.setCourseName(bCourse.getEdition().getCourseName());
         course.setExamTime(getUnixFromHour(bCourse.getExamTime()));
+
         if (bCourse.getUuid() != null) {
             course.setUuid(bCourse.getUuid().toString());
         }
