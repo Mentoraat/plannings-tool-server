@@ -32,6 +32,14 @@ public class CourseDAO extends AbstractDAO<Course> {
 
     }
 
+    @Transactional
+    public Course getFromCourseCode(String courseName, int year) {
+        return this.ensureExists(this.query().from(course)
+                .where(course.edition.year.eq(year)
+                        .and(course.courseName.eq(courseName))
+                ).singleResult(course)
+        );
+    }
 
     @Transactional
     public Course getFromUUID(String courseId) {

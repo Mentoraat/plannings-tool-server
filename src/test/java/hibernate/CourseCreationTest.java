@@ -74,6 +74,7 @@ public class CourseCreationTest {
         edition.setCourseId(courseId);
         edition.setYear(year);
 
+        course.setCourseName("");
         course.setEdition(edition);
 
         course.setExamTime(System.currentTimeMillis());

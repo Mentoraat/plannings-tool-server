@@ -1,6 +1,6 @@
 package nl.tudelft.planningstool.api.v1;
 
-import com.google.common.collect.Lists;
+import nl.tudelft.planningstool.api.responses.CourseResponse;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.security.Secured;
 import nl.tudelft.planningstool.database.embeddables.CourseEdition;
@@ -15,7 +15,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import java.text.ParseException;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Path("v1/users/USER-{userId: .+}/courses/{courseId: .+}-{year: \\d+}/assignments")
 @Secured
@@ -29,11 +29,17 @@ public class CourseAssignmentAPI extends ResponseAPI {
                                      AssignmentResponse response) {
         User u = this.userDAO.getFromUUID(userId);
 
-        CourseRelation relation = u.getCourses().stream().filter(r -> {
+        Optional<CourseRelation> oRelation = u.getCourses().stream().filter(r -> {
             CourseEdition edition = r.getCourse().getEdition();
 
             return edition.getCourseId().equals(courseId) && edition.getYear() == year;
-        }).findAny().get();
+        }).findAny();
+
+        if (!oRelation.isPresent()) {
+            throw new IllegalArgumentException("Invalid course edition");
+        }
+
+        CourseRelation relation = oRelation.get();
 
         if (relation.getCourseRole() == CourseRelation.CourseRole.STUDENT) {
             u.checkAdmin();
@@ -55,7 +61,7 @@ public class CourseAssignmentAPI extends ResponseAPI {
 
         this.courseDAO.merge(course);
 
-        response.setCourse(AssignmentResponse.AssignmentCourseResponse.from(course));
+        response.setCourse(CourseResponse.from(course));
         response.setId(assignment.getId());
 
         return response;
