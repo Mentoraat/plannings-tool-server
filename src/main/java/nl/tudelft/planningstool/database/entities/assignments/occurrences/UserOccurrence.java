@@ -42,6 +42,13 @@ public class UserOccurrence extends Occurrence {
     @Column(name = "occurrenceStatus")
     private OccurrenceStatus status = OccurrenceStatus.PLANNED;
 
+    @Column(name = "actualLength")
+    private Double actualLength = 0.0;
+
+    @Column(name = "notes")
+    private String notes = "";
+
+
     @Override
     protected void validateEndTime(long end_time) {
         if (end_time > this.getAssignment().getDeadline()) {
