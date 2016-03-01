@@ -84,6 +84,8 @@ public class UserOccurrenceAPI extends ResponseAPI {
         UserOccurrence occurrence = new UserOccurrence();
         occurrence.setStart_time(data.getStartTime());
         occurrence.setEnd_time(data.getEndTime());
+        occurrence.setActualLength(data.getActualLength());
+        occurrence.setNotes(data.getNotes());
 
         AssignmentResponse assignment = data.getAssignment();
         occurrence.setAssignment(
@@ -135,6 +137,8 @@ public class UserOccurrenceAPI extends ResponseAPI {
         occurrence.setEnd_time(data.getEndTime());
         occurrence.setStart_time(data.getStartTime());
         occurrence.setStatus(data.getStatus());
+        occurrence.setActualLength(data.getActualLength());
+        occurrence.setNotes(data.getNotes());
 
         log.info("Updated occurrence {}", occurrence);
 
