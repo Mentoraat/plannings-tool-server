@@ -167,6 +167,27 @@ public class UserOccurrenceAPI extends ResponseAPI {
         return createListResponse(occurrences);
     }
 
+    @DELETE
+    @Path("/courses/COURSE-{courseId: (\\d|\\w|-)+}/{assignmentId: (\\d)+}")
+    public void deleteOccurrence(@PathParam("userId") String userId, @PathParam("courseId") String courseId, @PathParam("assignmentId") Integer assignmentId) {
+        final Course course = this.courseDAO.getFromUUID(courseId);
+        int presize = this.userDAO.getFromUUID(userId)
+                .getOccurrences().size(); //FIXME remove after debugging
+
+        this.userDAO.getFromUUID(userId)
+                .getOccurrences().stream()
+                .filter(o -> o.getAssignment().getCourse().equals(course) && o.getAssignment().getId().intValue() == assignmentId.intValue() )
+                .forEach(p -> this.occurrenceDAO.remove(p));
+
+
+        int postsize = this.userDAO.getFromUUID(userId)
+                .getOccurrences().size(); //FIXME remove after debugging
+        log.debug(presize + "XXX -- i should delete stuff -- XXX" + postsize); //FIXME remove after debugging
+
+
+    }
+
+
     private ListResponse<UserOccurrenceResponse> createListResponse(Collection<UserOccurrence> occurrences) {
         return createListResponse(occurrences, UserOccurrenceResponse::from);
     }
