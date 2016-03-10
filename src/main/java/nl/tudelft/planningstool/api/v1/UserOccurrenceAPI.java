@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.TimeSlot;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.responses.CourseEditionResponse;
+import nl.tudelft.planningstool.api.responses.CourseResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.CourseOccurrenceResponse;
 import nl.tudelft.planningstool.api.responses.occurrences.OccurrenceResponse;
@@ -88,6 +89,7 @@ public class UserOccurrenceAPI extends ResponseAPI {
         occurrence.setNotes(data.getNotes());
 
         AssignmentResponse assignment = data.getAssignment();
+        checkAndCreateUserCourse(user, assignment);
         occurrence.setAssignment(
                 this.assignmentDAO.getFromCourseWithId(
                         assignment.getCourse().getEdition().getCourseId(),
@@ -103,6 +105,31 @@ public class UserOccurrenceAPI extends ResponseAPI {
         this.userDAO.merge(user);
 
         return UserOccurrenceResponse.from(occurrence);
+    }
+
+    private void checkAndCreateUserCourse(User user, AssignmentResponse assignment) {
+        String courseCode = "USER-" + user.getId();
+        if (!assignment.getCourse().getUuid().equals(courseCode)) {
+            return;
+        }
+
+        if (!this.courseDAO.courseExists(courseCode, 1)) {
+            Course course = new Course();
+            course.setCourseName(courseCode);
+            CourseEdition edition = new CourseEdition();
+            edition.setCourseId(courseCode);
+            edition.setYear(1);
+            course.setEdition(edition);
+
+            assignment.setCourse(CourseResponse.from(this.courseDAO.persist(course)));
+        } else {
+            assignment.setCourse(CourseResponse.from(this.courseDAO.getFromCourseCode(courseCode, 1)));
+        }
+
+        Assignment assignmentEntity = new Assignment();
+        assignmentEntity.setName(assignment.getName());
+        this.courseDAO.getFromCourseCode(courseCode, 1).addAssignment(assignmentEntity);
+        assignment.setId(assignmentEntity.getId());
     }
 
     /**

@@ -1,9 +1,11 @@
 package nl.tudelft.planningstool.api.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CourseResponse {
 
     private CourseEditionResponse edition;
