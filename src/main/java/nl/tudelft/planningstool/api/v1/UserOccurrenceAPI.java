@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -193,6 +194,18 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
         return createListResponse(occurrences);
     }
+
+    @DELETE
+    @Path("/courses/COURSE-{courseId: (\\d|\\w|-)+}/{assignmentId: (\\d)+}")
+    public void deleteOccurrence(@PathParam("userId") String userId, @PathParam("courseId") String courseId, @PathParam("assignmentId") Integer assignmentId) {
+        final Course course = this.courseDAO.getFromUUID(courseId);
+        final User user = this.userDAO.getFromUUID(userId);
+        final Predicate<UserOccurrence> predicate = o -> o.getAssignment().getCourse().equals(course) && o.getAssignment().getId().equals(assignmentId);
+
+        user.getOccurrences().removeIf(predicate);
+        this.userDAO.merge(user);
+    }
+
 
     private ListResponse<UserOccurrenceResponse> createListResponse(Collection<UserOccurrence> occurrences) {
         return createListResponse(occurrences, UserOccurrenceResponse::from);

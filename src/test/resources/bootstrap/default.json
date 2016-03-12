@@ -41,6 +41,7 @@
         "courseId" : "TI1505",
         "year" : 2015
       },
+      "uuid" : "aba62cd5-caa6-4e42-a5d6-5009f03038bf",
       "assignments" : [
         {
           "name" : "Assignment 1",
@@ -126,6 +127,7 @@
         "courseId" : "TI1605",
         "year" : 2015
       },
+      "uuid" : "abb62cd5-caa6-4e42-a5d6-4909f03038bf",
       "assignments" : [
         {
           "name" : "Assignment 1 - TI1605",
@@ -154,6 +156,7 @@
         "courseName" : "Baggage Handling System Technology and Operation",
         "year" : 2015
       },
+      "uuid" : "aba62cd5-c4a6-4e42-a5d6-4909f03038bf",
       "assignments" : [],
       "users" : [
         {
@@ -171,6 +174,8 @@
         "courseName" : "Strategic Planning for Airport Systems",
         "year" : 2015
       },
+      "uuid" : "aba62cd5-caa6-4e42-a5d6-49d9f03038bf",
+
       "assignments" : [],
       "users" : [
         {
@@ -188,6 +193,7 @@
         "courseName" : "Microwave Sensors and Radars for Airport Applications",
         "year" : 2015
       },
+      "uuid" : "aba62cd5-caa6-4e42-a5d6-1909f03038bf",
       "assignments" : [],
       "users" : [
         {
@@ -206,7 +212,7 @@
       "accessToken" : "AAAA-BBBB-CCCC-DDDD",
       "status" : "ADMIN",
       "uuid" : "025e6e3e-7eea-44c3-b75a-5e959fad94e3",
-      "hashedPassword" : "2892577026374761458263247122575697015978848410163910458228565991676461443889311235642147890010761473636186180526288329870323439937900272564777451599747153"
+      "hashedPassword" : "11989498138855498050168710055461588191347179704381434510010225726947671083223580285804546431819278172393797899283550884414613619144106060789426265956251405"
     }
   ]
 }

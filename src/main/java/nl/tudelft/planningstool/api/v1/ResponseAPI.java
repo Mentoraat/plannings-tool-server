@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.database.controllers.AssignmentDAO;
 import nl.tudelft.planningstool.database.controllers.CourseDAO;
+import nl.tudelft.planningstool.database.controllers.OccurrenceDAO;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 
 import javax.ws.rs.Produces;
@@ -26,6 +27,10 @@ public class ResponseAPI {
 
     @Inject
     protected AssignmentDAO assignmentDAO;
+
+    @Inject
+    protected OccurrenceDAO occurrenceDAO;
+
 
     protected <T, R> ListResponse<R> createListResponse(Collection<T> responses, Function<T, R> mapper) {
         return ListResponse.with(

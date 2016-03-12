@@ -72,7 +72,8 @@ public class User implements AdminVerifiable, Serializable {
     @OneToMany(mappedBy = "user")
     private Set<CourseRelation> courses = Sets.newHashSet();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    // http://stackoverflow.com/questions/549961/hibernate-removing-item-from-a-list-does-not-persist#comment12057916_550441
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserOccurrence> occurrences = Sets.newHashSet();
 
     @Enumerated(EnumType.STRING)
