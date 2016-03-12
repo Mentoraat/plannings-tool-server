@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -171,20 +172,11 @@ public class UserOccurrenceAPI extends ResponseAPI {
     @Path("/courses/COURSE-{courseId: (\\d|\\w|-)+}/{assignmentId: (\\d)+}")
     public void deleteOccurrence(@PathParam("userId") String userId, @PathParam("courseId") String courseId, @PathParam("assignmentId") Integer assignmentId) {
         final Course course = this.courseDAO.getFromUUID(courseId);
-        int presize = this.userDAO.getFromUUID(userId)
-                .getOccurrences().size(); //FIXME remove after debugging
+        final User user = this.userDAO.getFromUUID(userId);
+        final Predicate<UserOccurrence> predicate = o -> o.getAssignment().getCourse().equals(course) && o.getAssignment().getId().intValue() == assignmentId.intValue();
 
-        this.userDAO.getFromUUID(userId)
-                .getOccurrences().stream()
-                .filter(o -> o.getAssignment().getCourse().equals(course) && o.getAssignment().getId().intValue() == assignmentId.intValue() )
-                .forEach(p -> this.occurrenceDAO.remove(p));
-
-
-        int postsize = this.userDAO.getFromUUID(userId)
-                .getOccurrences().size(); //FIXME remove after debugging
-        log.debug(presize + "XXX -- i should delete stuff -- XXX" + postsize); //FIXME remove after debugging
-
-
+        user.getOccurrences().removeIf(predicate);
+        this.userDAO.merge(user);
     }
 
 
