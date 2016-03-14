@@ -123,6 +123,12 @@ public class UserOccurrenceAPI extends ResponseAPI {
             course.setEdition(edition);
 
             assignment.setCourse(CourseResponse.from(this.courseDAO.persist(course)));
+
+            CourseRelation relation = new CourseRelation();
+            relation.setCourse(course);
+            relation.setCourseRole(CourseRelation.CourseRole.TEACHER);
+            user.addCourseRelation(relation);
+            this.userDAO.merge(user);
         } else {
             assignment.setCourse(CourseResponse.from(this.courseDAO.getFromCourseCode(courseCode, 1)));
         }
