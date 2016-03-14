@@ -88,6 +88,7 @@ public class UserOccurrenceAPI extends ResponseAPI {
         occurrence.setEnd_time(data.getEndTime());
         occurrence.setActualLength(data.getActualLength());
         occurrence.setNotes(data.getNotes());
+        occurrence.setStatus(UserOccurrence.OccurrenceStatus.UNFINISHED);
 
         AssignmentResponse assignment = data.getAssignment();
         checkAndCreateUserCourse(user, assignment);
