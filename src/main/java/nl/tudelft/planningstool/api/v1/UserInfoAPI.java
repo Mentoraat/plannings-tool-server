@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nl.tudelft.planningstool.api.responses.CourseEditionResponse;
 import nl.tudelft.planningstool.api.responses.UserResponse;
 import nl.tudelft.planningstool.database.entities.User;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 
@@ -59,7 +60,7 @@ public class UserInfoAPI extends ResponseAPI {
 
     private void cleanUpWeekOldOccurrences(User user) {
         long weekago = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7);
-        user.getOccurrences().removeIf(o -> o.getStart_time() <= weekago);
+        user.getOccurrences().removeIf(o -> o.getStart_time() <= weekago && o.getStatus() == UserOccurrence.OccurrenceStatus.UNFINISHED);
         this.userDAO.merge(user);
     }
 
