@@ -17,6 +17,7 @@ import javax.ws.rs.PathParam;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Path("v1/users/USER-{userId: .+}")
@@ -51,7 +52,15 @@ public class UserInfoAPI extends ResponseAPI {
         r.setUser(UserResponse.from(user));
         r.setColors(map);
 
+        cleanUpWeekOldOccurrences(user);
+
         return r;
+    }
+
+    private void cleanUpWeekOldOccurrences(User user) {
+        long weekago = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7);
+        user.getOccurrences().removeIf(o -> o.getStart_time() <= weekago);
+        this.userDAO.merge(user);
     }
 
     @GET
