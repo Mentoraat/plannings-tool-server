@@ -56,7 +56,7 @@ public class UserOccurrenceAPITest {
             return one instanceof UserOccurrenceResponse ? -1 : 1;
         });
 
-        assertThat(response.size()).isEqualTo(7);
+        assertThat(response.size()).isEqualTo(6);
     }
 
     @Test
