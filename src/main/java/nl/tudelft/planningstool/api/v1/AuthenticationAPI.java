@@ -60,11 +60,13 @@ public class AuthenticationAPI extends ResponseAPI{
         user.setName(credentials.getUsername());
         user.setUuid(UUID.randomUUID().toString());
 
-        this.courseDAO.getAll().forEach(course -> {
-            CourseRelation rel = new CourseRelation();
-            rel.setCourse(course);
-            user.addCourseRelation(rel);
-        });
+        this.courseDAO.getAll()
+            .stream().filter(c -> !c.getCourseName().startsWith("USER-"))
+            .forEach(course -> {
+                CourseRelation rel = new CourseRelation();
+                rel.setCourse(course);
+                user.addCourseRelation(rel);
+            });
 
         this.userDAO.persist(user);
 
