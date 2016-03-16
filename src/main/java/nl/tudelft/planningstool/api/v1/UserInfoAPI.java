@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import nl.tudelft.planningstool.api.responses.CourseEditionResponse;
 import nl.tudelft.planningstool.api.responses.UserResponse;
 import nl.tudelft.planningstool.database.entities.User;
+import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 
@@ -17,6 +18,7 @@ import javax.ws.rs.PathParam;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Path("v1/users/USER-{userId: .+}")
@@ -51,7 +53,15 @@ public class UserInfoAPI extends ResponseAPI {
         r.setUser(UserResponse.from(user));
         r.setColors(map);
 
+        cleanUpWeekOldOccurrences(user);
+
         return r;
+    }
+
+    private void cleanUpWeekOldOccurrences(User user) {
+        long weekago = System.currentTimeMillis() - TimeUnit.DAYS.toMillis(7);
+        user.getOccurrences().removeIf(o -> o.getStart_time() <= weekago && o.getStatus() == UserOccurrence.OccurrenceStatus.UNFINISHED);
+        this.userDAO.merge(user);
     }
 
     @GET
