@@ -59,6 +59,7 @@ public class UserInfoAPI extends ResponseAPI {
     public List<CourseEditionResponse> getCourses(@PathParam("userId") String userId) {
         return this.userDAO.getFromUUID(userId)
                 .getCourses().stream()
+                .filter(r -> r.getCourseRole() == CourseRelation.CourseRole.TEACHER)
                 .map(CourseRelation::getCourse)
                 .map(Course::getEdition)
                 .map(CourseEditionResponse::from)
