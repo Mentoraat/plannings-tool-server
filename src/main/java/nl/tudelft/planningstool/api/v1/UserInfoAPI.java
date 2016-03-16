@@ -1,20 +1,22 @@
 package nl.tudelft.planningstool.api.v1;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.responses.CourseEditionResponse;
 import nl.tudelft.planningstool.api.responses.UserResponse;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.occurrences.UserOccurrence;
+import nl.tudelft.planningstool.database.entities.assignments.Assignment;
 import nl.tudelft.planningstool.database.entities.courses.Course;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -73,6 +75,21 @@ public class UserInfoAPI extends ResponseAPI {
                 .map(CourseRelation::getCourse)
                 .map(Course::getEdition)
                 .map(CourseEditionResponse::from)
+                .collect(Collectors.toList());
+    }
+
+    @GET
+    @Path("/assignmentsAsTeacher")
+    public List<AssignmentResponse> getAssignmentsWhereTeacher(@PathParam("userId") String userId) {
+        return this.userDAO.getFromUUID(userId)
+                .getCourses().stream()
+                .filter(courseRelation -> courseRelation.getCourseRole() == CourseRelation.CourseRole.TEACHER)
+                .map(CourseRelation::getCourse)
+                .map(Course::getAssignments)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList())
+                .stream()
+                .map(AssignmentResponse::from)
                 .collect(Collectors.toList());
     }
 
