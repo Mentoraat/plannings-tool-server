@@ -87,8 +87,6 @@ public class UserInfoAPI extends ResponseAPI {
                 .map(CourseRelation::getCourse)
                 .map(Course::getAssignments)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList())
-                .stream()
                 .map(AssignmentResponse::from)
                 .collect(Collectors.toList());
     }
