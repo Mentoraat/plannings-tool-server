@@ -1,6 +1,7 @@
 package nl.tudelft.planningstool.api.v1;
 
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.AtomicDouble;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.security.Secured;
@@ -59,26 +60,38 @@ public class UserAssignmentAPI extends ResponseAPI {
 
     @GET
     @Path("/stats")
-    public int[] getWithStatus(@PathParam("userId") String userId) {
-        Map<UserOccurrence.OccurrenceStatus, AtomicInteger> map = Maps.newConcurrentMap();
-
-        for (UserOccurrence.OccurrenceStatus status : UserOccurrence.OccurrenceStatus.values()) {
-            map.put(status, new AtomicInteger());
-        }
-
+    public double[] getWithStatus(@PathParam("userId") String userId) {
+        AtomicDouble finished = new AtomicDouble();
+        AtomicDouble planned = new AtomicDouble();
+        AtomicDouble total = new AtomicDouble();
         User user = this.userDAO.getFromUUID(userId);
-        user.getOccurrences().forEach(o -> {
-            map.get(o.getStatus()).incrementAndGet();
-        });
 
-        long total = user.getCourses().stream()
+        Collection<Assignment> alreadyPlannedAssignments = user.getOccurrences().stream()
+                .map(UserOccurrence::getAssignment)
+                .collect(Collectors.toSet());
+
+        user.getOccurrences().stream()
+                .filter(o -> o.getStatus() == UserOccurrence.OccurrenceStatus.FINISHED)
+                .forEach(o -> {
+                    long length = o.getActualLength().longValue();
+                    if (length == 0.0) {
+                        length = TimeUnit.MILLISECONDS.toHours(o.getEnd_time() - o.getStart_time());
+                    }
+                    finished.addAndGet(length);
+                });
+
+        user.getOccurrences().stream()
+                .filter(o -> o.getStatus() == UserOccurrence.OccurrenceStatus.UNFINISHED)
+                .forEach(o -> planned.addAndGet(TimeUnit.MILLISECONDS.toHours(o.getEnd_time() - o.getStart_time())));
+
+        user.getCourses().stream()
                 .map(CourseRelation::getCourse)
                 .map(Course::getAssignments)
                 .flatMap(Collection::stream)
-                .count();
+                .filter(a -> !alreadyPlannedAssignments.contains(a))
+                .forEach(a -> total.addAndGet(a.getLength()));
 
-        int finished = map.get(UserOccurrence.OccurrenceStatus.FINISHED).get();
-        return new int[] {finished, (int) total - finished};
+        return new double[] {finished.get(), planned.get(), total.get()};
     }
 
     private ListResponse<AssignmentResponse> createListResponse(Collection<Assignment> assignments) {
