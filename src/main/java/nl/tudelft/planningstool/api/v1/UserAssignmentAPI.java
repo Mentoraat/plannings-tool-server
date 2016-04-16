@@ -1,7 +1,10 @@
 package nl.tudelft.planningstool.api.v1;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.AtomicDouble;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import nl.tudelft.planningstool.api.responses.AssignmentResponse;
 import nl.tudelft.planningstool.api.responses.ListResponse;
 import nl.tudelft.planningstool.api.security.Secured;
@@ -58,20 +61,36 @@ public class UserAssignmentAPI extends ResponseAPI {
         return createListResponse(assignments);
     }
 
+    @Data
+    @AllArgsConstructor
+    private class CourseData {
+        private String name;
+        private double[] data;
+    }
+
     @GET
     @Path("/stats")
-    public double[] getWithStatus(@PathParam("userId") String userId) {
-        AtomicDouble finished = new AtomicDouble();
-        AtomicDouble planned = new AtomicDouble();
-        AtomicDouble total = new AtomicDouble();
+    public List<CourseData> getWithStatus(@PathParam("userId") String userId) {
         User user = this.userDAO.getFromUUID(userId);
 
         Collection<Assignment> alreadyPlannedAssignments = user.getOccurrences().stream()
                 .map(UserOccurrence::getAssignment)
                 .collect(Collectors.toSet());
 
+        return user.getCourses().stream()
+                .map(CourseRelation::getCourse)
+                .map(c -> new CourseData(c.getCourseName(), calculateBarDataForCourse(user, c, alreadyPlannedAssignments)))
+                .collect(Collectors.toList());
+    }
+
+    private double[] calculateBarDataForCourse(User user, Course c, Collection<Assignment> alreadyPlannedAssignments) {
+        AtomicDouble finished = new AtomicDouble();
+        AtomicDouble planned = new AtomicDouble();
+        AtomicDouble unplanned = new AtomicDouble();
+
         user.getOccurrences().stream()
-                .filter(o -> o.getStatus() == UserOccurrence.OccurrenceStatus.FINISHED)
+                .filter(o -> o.getStatus() == UserOccurrence.OccurrenceStatus.FINISHED
+                        && o.getAssignment().getCourse().equals(c))
                 .forEach(o -> {
                     long length = o.getActualLength().longValue();
                     if (length == 0.0) {
@@ -81,17 +100,15 @@ public class UserAssignmentAPI extends ResponseAPI {
                 });
 
         user.getOccurrences().stream()
-                .filter(o -> o.getStatus() == UserOccurrence.OccurrenceStatus.UNFINISHED)
+                .filter(o -> o.getStatus() == UserOccurrence.OccurrenceStatus.UNFINISHED
+                        && o.getAssignment().getCourse().equals(c))
                 .forEach(o -> planned.addAndGet(TimeUnit.MILLISECONDS.toHours(o.getEnd_time() - o.getStart_time())));
 
-        user.getCourses().stream()
-                .map(CourseRelation::getCourse)
-                .map(Course::getAssignments)
-                .flatMap(Collection::stream)
+        c.getAssignments().stream()
                 .filter(a -> !alreadyPlannedAssignments.contains(a))
-                .forEach(a -> total.addAndGet(a.getLength()));
+                .forEach(a -> unplanned.addAndGet(a.getLength()));
 
-        return new double[] {finished.get(), planned.get(), total.get()};
+        return new double[] {finished.get(), planned.get(), unplanned.get()};
     }
 
     private ListResponse<AssignmentResponse> createListResponse(Collection<Assignment> assignments) {
