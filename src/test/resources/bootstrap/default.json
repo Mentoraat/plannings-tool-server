@@ -3,6 +3,7 @@
     {
       "edition" : {
         "courseId" : "TI1405",
+        "courseName": "Object Oriented Programming",
         "year" : 2015
       },
       "uuid" : "aba62cd5-caa6-4e42-a5d6-4909f03038bf",
@@ -39,6 +40,7 @@
     {
       "edition" : {
         "courseId" : "TI1505",
+        "courseName": "OOP Project",
         "year" : 2015
       },
       "uuid" : "aba62cd5-caa6-4e42-a5d6-5009f03038bf",
@@ -125,6 +127,7 @@
     {
       "edition" : {
         "courseId" : "TI1605",
+        "courseName": "Algorithms and Datastructures",
         "year" : 2015
       },
       "uuid" : "abb62cd5-caa6-4e42-a5d6-4909f03038bf",
