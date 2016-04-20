@@ -117,7 +117,7 @@ public class UserOccurrenceAPI extends ResponseAPI {
 
         if (!this.courseDAO.courseExists(courseCode, 1)) {
             Course course = new Course();
-            course.setCourseName(courseCode);
+            course.setCourseName("Personal events");
             CourseEdition edition = new CourseEdition();
             edition.setCourseId(courseCode);
             edition.setYear(1);
