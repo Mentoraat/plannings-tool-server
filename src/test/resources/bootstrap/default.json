@@ -211,7 +211,7 @@
   ],
   "users" : [
     {
-      "name" : "Admin",
+      "name" : "admin",
       "accessToken" : "AAAA-BBBB-CCCC-DDDD",
       "status" : "ADMIN",
       "uuid" : "025e6e3e-7eea-44c3-b75a-5e959fad94e3",

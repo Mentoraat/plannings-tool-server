@@ -57,14 +57,15 @@ public class AuthenticationAPI extends ResponseAPI{
         User user = new User();
         user.setAdminStatus(User.AdminStatus.USER);
         user.setHashedPassword(this.hashPassword(credentials.getPassword()));
-        user.setName(credentials.getUsername());
+        user.setName(credentials.getUsername().toLowerCase());
         user.setUuid(UUID.randomUUID().toString());
 
         this.courseDAO.getAll()
-            .stream().filter(c -> !c.getCourseName().startsWith("USER-"))
+            .stream().filter(c -> !c.getEdition().getCourseId().startsWith("USER-"))
             .forEach(course -> {
                 CourseRelation rel = new CourseRelation();
                 rel.setCourse(course);
+                rel.setCourseRole(CourseRelation.CourseRole.STUDENT);
                 user.addCourseRelation(rel);
             });
 

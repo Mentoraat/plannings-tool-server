@@ -35,7 +35,7 @@ public class UserDAO extends AbstractDAO<User> {
     @Transactional
     public User getFromUsername(String username) {
         return ensureExists(this.query().from(user)
-                .where(user.name.eq(username))
+                .where(user.name.eq(username.toLowerCase()))
                 .singleResult(user));
     }
 
@@ -49,7 +49,7 @@ public class UserDAO extends AbstractDAO<User> {
     @Transactional
     public boolean existsWithUsername(String username) {
         return this.query().from(user)
-                .where(user.name.eq(username))
+                .where(user.name.eq(username.toLowerCase()))
                 .singleResult(user) != null;
     }
 }

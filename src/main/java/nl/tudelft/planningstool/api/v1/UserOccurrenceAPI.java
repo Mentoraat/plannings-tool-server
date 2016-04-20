@@ -122,6 +122,7 @@ public class UserOccurrenceAPI extends ResponseAPI {
             edition.setCourseId(courseCode);
             edition.setYear(1);
             course.setEdition(edition);
+            course.setUuid(courseCode);
 
             assignment.setCourse(CourseResponse.from(this.courseDAO.persist(course)));
 
