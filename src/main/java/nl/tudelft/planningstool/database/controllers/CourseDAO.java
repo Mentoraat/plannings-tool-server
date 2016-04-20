@@ -36,7 +36,7 @@ public class CourseDAO extends AbstractDAO<Course> {
     public Course getFromCourseCode(String courseName, int year) {
         return this.ensureExists(this.query().from(course)
                 .where(course.edition.year.eq(year)
-                        .and(course.courseName.eq(courseName))
+                        .and(course.edition.courseId.eq(courseName))
                 ).singleResult(course)
         );
     }
@@ -45,7 +45,7 @@ public class CourseDAO extends AbstractDAO<Course> {
     public boolean courseExists(String courseName, int year) {
         return this.query().from(course)
                 .where(course.edition.year.eq(year)
-                        .and(course.courseName.eq(courseName))
+                        .and(course.edition.courseId.eq(courseName))
                 ).singleResult(course) != null;
     }
 
