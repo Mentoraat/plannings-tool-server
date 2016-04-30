@@ -1,6 +1,5 @@
 package nl.tudelft.planningstool.api.v1;
 
-
 import com.google.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.Credentials;
@@ -18,7 +17,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
-
 
 /**
  * Provides Authentication API endpoints.
@@ -50,6 +48,9 @@ public class AuthenticationAPI extends ResponseAPI{
     @POST
     @Path("register")
     public TokenResponse registerUser(Credentials credentials) throws NoSuchAlgorithmException {
+        requireStringNotEmpty(credentials.getUsername());
+        requireStringNotEmpty(credentials.getPassword());
+
         if (this.userDAO.existsWithUsername(credentials.getUsername())) {
             throw new IllegalArgumentException("User already exists.");
         }
@@ -72,6 +73,12 @@ public class AuthenticationAPI extends ResponseAPI{
         this.userDAO.persist(user);
 
         return this.authenticateUser(credentials);
+    }
+
+    private void requireStringNotEmpty(String value) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException("Value is empty!");
+        }
     }
 
     private TokenResponse issueToken(User user) {
