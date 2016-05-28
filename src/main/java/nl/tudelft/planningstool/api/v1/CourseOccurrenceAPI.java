@@ -1,5 +1,6 @@
 package nl.tudelft.planningstool.api.v1;
 
+import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.security.Secured;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.assignments.Assignment;
@@ -19,6 +20,7 @@ import java.util.function.Consumer;
 
 @Path("v1/courses")
 @Secured
+@Slf4j
 public class CourseOccurrenceAPI extends ResponseAPI {
 
     private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
@@ -113,11 +115,14 @@ public class CourseOccurrenceAPI extends ResponseAPI {
         CourseOccurrence o = new CourseOccurrence();
         o.plan(startTime, durationLong);
 
-        // TODO: Handle not-found course
         // TODO: Specify how to find year
-        Course course = this.courseDAO.getFromEdition(courseId, Integer.valueOf(day.split("-")[0]));
-        course.addOccurrence(o);
-        this.courseDAO.merge(course);
+        try {
+            Course course = this.courseDAO.getFromEdition(courseId, Integer.valueOf(day.split("-")[0]));
+            course.addOccurrence(o);
+            this.courseDAO.merge(course);
+        } catch(Exception e) {
+            log.error("Failed to upload for course {}", courseId);
+        }
     }
 
     private interface ScannerConsumer {
