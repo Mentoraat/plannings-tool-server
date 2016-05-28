@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 @Slf4j
 public class CourseOccurrenceAPI extends ResponseAPI {
 
-    private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyy-MM-dd-HH:mm");
+    private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("dd-MM-yyyy-HH:mm");
 
     static {
         TIME_FORMATTER.setTimeZone(TimeZone.getTimeZone("Amsterdam"));
@@ -120,6 +120,11 @@ public class CourseOccurrenceAPI extends ResponseAPI {
         String[] duration = parts[9].split(":");
 
         long startTime;
+
+        // Hours with no starting zero
+        if (startTimeString.length() == 4) {
+            startTimeString = "0" + startTimeString;
+        }
 
         synchronized (TIME_FORMATTER) {
             startTime = TIME_FORMATTER.parse(day + "-" + startTimeString).getTime();
