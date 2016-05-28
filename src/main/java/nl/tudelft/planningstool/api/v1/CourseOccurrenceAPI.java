@@ -41,7 +41,14 @@ public class CourseOccurrenceAPI extends ResponseAPI {
 
             String s;
             // Weeks are split by an empty line
-            while (sc.hasNextLine() && !(s = sc.nextLine()).equals("")) {
+            while (sc.hasNextLine()) {
+                s = sc.nextLine();
+                // New week has started
+                if (s.equals("")) {
+                    sc.nextLine();
+                    sc.nextLine();
+                    s = sc.nextLine();
+                }
                 createOccurrenceFromLine(s);
             }
         });
@@ -100,7 +107,7 @@ public class CourseOccurrenceAPI extends ResponseAPI {
             parts[i] = parts[i].replaceAll("\"", "");
         }
 
-        String courseId = parts[0];
+        String courseId = parts[1];
         String day = parts[4];
         String startTimeString = parts[5];
         String[] duration = parts[9].split(":");
