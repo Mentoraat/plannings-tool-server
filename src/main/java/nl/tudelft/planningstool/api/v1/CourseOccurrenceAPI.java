@@ -103,6 +103,11 @@ public class CourseOccurrenceAPI extends ResponseAPI {
     private void createOccurrenceFromLine(String s) throws ParseException {
         String[] parts = s.split(";");
 
+        // Empty lines or incorrect lines should be ignored
+        if (parts.length < 10) {
+            return;
+        }
+
         for (int i = 0; i < parts.length; i++) {
             parts[i] = parts[i].replaceAll("\"", "");
         }
