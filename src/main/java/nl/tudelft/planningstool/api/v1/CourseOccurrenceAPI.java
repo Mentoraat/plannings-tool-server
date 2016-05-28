@@ -45,6 +45,9 @@ public class CourseOccurrenceAPI extends ResponseAPI {
                 s = sc.nextLine();
                 // New week has started
                 if (s.equals("")) {
+                    if (!sc.hasNextLine()) {
+                        return;
+                    }
                     sc.nextLine();
                     sc.nextLine();
                     s = sc.nextLine();
@@ -129,7 +132,7 @@ public class CourseOccurrenceAPI extends ResponseAPI {
 
         // TODO: Specify how to find year
         try {
-            Course course = this.courseDAO.getFromEdition(courseId, Integer.valueOf(day.split("-")[0]));
+            Course course = this.courseDAO.getFromEdition(courseId, Integer.valueOf(day.split("-")[2]));
             course.addOccurrence(o);
             this.courseDAO.merge(course);
         } catch(Exception e) {
