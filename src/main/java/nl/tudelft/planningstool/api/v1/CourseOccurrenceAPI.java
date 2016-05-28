@@ -40,11 +40,10 @@ public class CourseOccurrenceAPI extends ResponseAPI {
             sc.nextLine();
 
             String s;
-            // Weeks are split by an empty line
             while (sc.hasNextLine()) {
                 s = sc.nextLine();
                 // New week has started
-                if (s.equals("")) {
+                if (s.equals("") || s.matches("[;]+")) {
                     if (!sc.hasNextLine()) {
                         return;
                     }
