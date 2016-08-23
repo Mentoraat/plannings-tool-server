@@ -72,7 +72,7 @@ public class UserInfoAPI extends ResponseAPI {
         return this.userDAO.getFromUUID(userId)
                 .getCourses().stream()
                 .filter(r -> r.getCourseRole() == CourseRelation.CourseRole.TEACHER
-                                && !r.getCourse().getCourseName().startsWith("USER-"))
+                                && !r.getCourse().getCourseName().equals("Personal events"))
                 .map(CourseRelation::getCourse)
                 .map(Course::getEdition)
                 .map(CourseEditionResponse::from)

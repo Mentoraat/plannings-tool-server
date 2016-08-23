@@ -120,6 +120,11 @@
               "status" : "UNFINISHED"
             }
           ]
+        },
+        {
+          "id" : 2,
+          "role" : "STUDENT",
+          "occurrences" : []
         }
       ],
       "examTime" : 45
@@ -134,7 +139,7 @@
       "assignments" : [
         {
           "name" : "Assignment 1 - TI1605",
-          "description" : "The first assignment!"
+          "description" : "The first assignment! But this one has a really long description. But this one has a really long description. But this one has a really long description. But this one has a really long description."
         }
       ],
       "users" : [
@@ -203,6 +208,11 @@
           "id" : 1,
           "role" : "STUDENT",
           "occurrences" : []
+        },
+        {
+          "id" : 2,
+          "role" : "STUDENT",
+          "occurrences" : []
         }
       ],
       "examTime" : 50,
@@ -216,6 +226,13 @@
       "status" : "ADMIN",
       "uuid" : "025e6e3e-7eea-44c3-b75a-5e959fad94e3",
       "hashedPassword" : "11989498138855498050168710055461588191347179704381434510010225726947671083223580285804546431819278172393797899283550884414613619144106060789426265956251405"
+    },
+    {
+      "name" : "asdf",
+      "accessToken" : "DDDD-CCCC-BBBB-AAAA",
+      "status" : "USER",
+      "uuid" : "7ba68e15-7168-491b-837c-b1b7e5a7f38b",
+      "hashedPassword" : "1352496406011948998079613586295355627641628174674633109084569017573039431101876596223995746241435972435421275264234092114827942139319477017170828094318885"
     }
   ]
 }
