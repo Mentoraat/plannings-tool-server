@@ -9,8 +9,8 @@ import java.io.Serializable;
  * Provide a serializable class, used to consume authentication details.
  */
 @Data
-@ToString(exclude = "password")
-public class Credentials implements Serializable {
-    private String username;
-    private String password;
+@ToString(callSuper = true)
+public class Registration extends Credentials {
+    private String email;
+    private int studentnumber;
 }

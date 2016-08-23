@@ -3,6 +3,7 @@ package nl.tudelft.planningstool.api.v1;
 import com.google.inject.Inject;
 import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.Credentials;
+import nl.tudelft.planningstool.api.parameters.Registration;
 import nl.tudelft.planningstool.api.responses.TokenResponse;
 import nl.tudelft.planningstool.api.security.NotAUserException;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
@@ -17,6 +18,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Provides Authentication API endpoints.
@@ -47,19 +49,29 @@ public class AuthenticationAPI extends ResponseAPI{
 
     @POST
     @Path("register")
-    public TokenResponse registerUser(Credentials credentials) throws NoSuchAlgorithmException {
-        requireStringNotEmpty(credentials.getUsername());
-        requireStringNotEmpty(credentials.getPassword());
+    public TokenResponse registerUser(Registration registration) throws NoSuchAlgorithmException {
+        requireStringNotEmpty(registration.getUsername());
+        requireStringNotEmpty(registration.getPassword());
 
-        if (this.userDAO.existsWithUsername(credentials.getUsername())) {
+        if (this.userDAO.existsWithUsername(registration.getUsername())) {
             throw new IllegalArgumentException("User already exists.");
+        }
+
+        if (this.userDAO.existsWithEmail(registration.getEmail())) {
+            throw new IllegalArgumentException("Email is already registered");
+        }
+
+        if (this.userDAO.existsWithStudentNumber(registration.getStudentnumber())) {
+            throw new IllegalArgumentException("Student number already exists");
         }
 
         User user = new User();
         user.setAdminStatus(User.AdminStatus.USER);
-        user.setHashedPassword(this.hashPassword(credentials.getPassword()));
-        user.setName(credentials.getUsername().toLowerCase());
+        user.setHashedPassword(this.hashPassword(registration.getPassword()));
+        user.setName(registration.getUsername().toLowerCase());
         user.setUuid(UUID.randomUUID().toString());
+        user.setEmail(registration.getEmail());
+        user.setStudentNumber(registration.getStudentnumber());
 
         this.courseDAO.getAll()
             .stream().filter(c -> !c.getEdition().getCourseId().startsWith("USER-"))
@@ -70,9 +82,14 @@ public class AuthenticationAPI extends ResponseAPI{
                 user.addCourseRelation(rel);
             });
 
-        this.userDAO.persist(user);
+        try {
+            this.userDAO.persist(user);
+        } catch (Exception ignored) {
+            log.debug("Exception while registering registration {}", registration);
+            throw new IllegalArgumentException("Failed processing user registration");
+        }
 
-        return this.authenticateUser(credentials);
+        return this.authenticateUser(registration);
     }
 
     private void requireStringNotEmpty(String value) {

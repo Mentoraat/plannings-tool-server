@@ -86,6 +86,10 @@ public class Bootstrapper {
 
         private String hashedPassword;
 
+        private String email;
+
+        private int studentNumber;
+
     }
 
     @Data
@@ -205,6 +209,8 @@ public class Bootstrapper {
         user.setAccessToken(bUser.getAccessToken());
         user.setUuid(bUser.getUuid());
         user.setHashedPassword(bUser.getHashedPassword());
+        user.setEmail(bUser.getEmail());
+        user.setStudentNumber(bUser.getStudentNumber());
 
         if (bUser.getStatus() != null) {
             user.setAdminStatus(User.AdminStatus.valueOf(bUser.getStatus()));

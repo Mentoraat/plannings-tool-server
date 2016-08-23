@@ -52,4 +52,18 @@ public class UserDAO extends AbstractDAO<User> {
                 .where(user.name.eq(username.toLowerCase()))
                 .singleResult(user) != null;
     }
+
+    @Transactional
+    public boolean existsWithEmail(String email) {
+        return this.query().from(user)
+                .where(user.email.eq(email.toLowerCase()))
+                .singleResult(user) != null;
+    }
+
+    @Transactional
+    public boolean existsWithStudentNumber(int studentNumber) {
+        return this.query().from(user)
+                .where(user.studentNumber.eq(studentNumber))
+                .singleResult(user) != null;
+    }
 }

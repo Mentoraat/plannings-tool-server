@@ -69,6 +69,12 @@ public class User implements AdminVerifiable, Serializable {
     @Column(name = "uuid", unique = true)
     private String uuid;
 
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "studentnumber", nullable = false, unique = true)
+    private Integer studentNumber;
+
     @OneToMany(mappedBy = "user")
     private Set<CourseRelation> courses = Sets.newHashSet();
 
