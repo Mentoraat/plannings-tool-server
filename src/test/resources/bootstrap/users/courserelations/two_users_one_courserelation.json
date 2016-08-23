@@ -24,12 +24,16 @@
     {
       "name" : "Admin",
       "accessToken" : "asdf",
-      "hashedPassword" : "abc"
+      "hashedPassword" : "abc",
+      "email" : "email",
+      "studentNumber" : "123"
     },
     {
       "name" : "Admin2",
       "accessToken" : "fdas",
-      "hashedPassword" : "abc"
+      "hashedPassword" : "abc",
+      "email" : "email2",
+      "studentNumber" : "1234"
     }
   ]
 }

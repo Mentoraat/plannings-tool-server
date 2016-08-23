@@ -119,6 +119,8 @@ public class UserCreationTest {
         user.setName(name);
         user.setCourses(Sets.newHashSet());
         user.setHashedPassword("asdf");
+        user.setStudentNumber(1);
+        user.setEmail("email3");
 
         return user;
     }

@@ -3,7 +3,9 @@
     {
       "name" : "Admin",
       "accessToken" : "asdf",
-      "hashedPassword" : "abc"
+      "hashedPassword" : "abc",
+      "email" : "email",
+      "studentNumber" : "123"
     }
   ]
 }
