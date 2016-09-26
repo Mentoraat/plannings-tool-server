@@ -136,7 +136,7 @@ public class CourseOccurrenceAPI extends ResponseAPI {
 
         // TODO: Specify how to find year
         try {
-            Course course = this.courseDAO.getFromEdition(courseId, Integer.valueOf(day.split("-")[2]));
+            Course course = this.courseDAO.getFromEdition(courseId, Integer.valueOf(day.split("-")[0]));
             course.addOccurrence(o);
             this.courseDAO.merge(course);
         } catch(Exception e) {
