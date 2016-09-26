@@ -1,22 +1,34 @@
 package nl.tudelft.planningstool.api.v1;
 
+import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.Credentials;
 import nl.tudelft.planningstool.api.parameters.Registration;
 import nl.tudelft.planningstool.api.responses.TokenResponse;
 import nl.tudelft.planningstool.api.security.NotAUserException;
+import nl.tudelft.planningstool.database.DbModule;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
 import org.jboss.resteasy.annotations.Form;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.MimeMessage;
 import javax.ws.rs.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Date;
+import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -93,36 +105,69 @@ public class AuthenticationAPI extends ResponseAPI{
         return this.authenticateUser(registration);
     }
 
+    @Data
+    private class ResetPasswordForm {
+        String userName;
+        String email;
+    }
+
     @POST
     @Path("/resetpassword")
-    public void resetPassword(@FormParam("username") String usrName) {
-        User usr = this.userDAO.getFromUsername(usrName);
+    public void resetPassword(ResetPasswordForm passwordForm) {
+        User user = this.userDAO.getFromUsername(passwordForm.getUserName());
+
+        if (!user.getEmail().equals(passwordForm.getEmail())) {
+            throw new IllegalArgumentException("Invalid combination of username and email address");
+        }
+
         String token = new BigInteger(130, new SecureRandom()).toString(32);
 
-        usr.setResetToken(token);
+        user.setResetToken(token);
         // Set validity for 24 hours from now.
-        usr.setResetTokenValidity(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+        user.setResetTokenValidity(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
 
-        // TODO Mail user with a tokenized link
-        this.userDAO.merge(usr);
+        this.userDAO.merge(user);
+
+        try {
+            Properties props = getProperties();
+            Session session = Session.getInstance(props, null);
+            MimeMessage msg = new MimeMessage(session);
+            msg.setFrom("noreply@planningstool.ewi.tudelft.nl");
+            msg.setRecipients(Message.RecipientType.TO, user.getEmail());
+            msg.setSubject("Planningstool password reset token");
+            msg.setSentDate(new Date());
+            msg.setText("Dear " + user.getName() + ",\n\nYour reset token is " + token + "\n\nRegards,\nPlanningstool admins");
+            Transport.send(msg, props.getProperty("user"), props.getProperty("password"));
+        } catch (MessagingException | IOException mex) {
+            log.error("send failed, exception: " + mex);
+        }
+    }
+
+    private Properties getProperties() throws IOException {
+        try (InputStream stream = DbModule.class.getResourceAsStream("/mail.properties")) {
+            final Properties properties = new Properties();
+            Preconditions.checkNotNull(stream, "Persistence properties not found");
+            properties.load(stream);
+            return properties;
+        }
     }
 
     @POST
     @Path("/resetpassword/{resetToken: .+}")
-    public void setNewPassword(@FormParam("username") String usrName, @FormParam("newpassword") String newPassword, @PathParam("resetToken") String providedResetToken) throws NoSuchAlgorithmException {
-        User usr = this.userDAO.getFromUsername(usrName);
+    public void setNewPassword(Credentials credentials, @PathParam("resetToken") String providedResetToken) throws NoSuchAlgorithmException {
+        User user = this.userDAO.getFromUsername(credentials.getUsername());
 
-        if (usr.getResetToken() == null || usr.getResetTokenValidity() < System.currentTimeMillis() || usr.getResetToken().equals(providedResetToken) ) {
+        if (user.getResetToken() == null || user.getResetTokenValidity() < System.currentTimeMillis() || user.getResetToken().equals(providedResetToken) ) {
             throw new IllegalArgumentException("illegal reset token provided");
         }
 
-        usr.setHashedPassword(this.hashPassword(newPassword));
+        user.setHashedPassword(this.hashPassword(credentials.getPassword()));
 
         // Deauthorize reset token
-        usr.setResetToken(null);
-        usr.setResetTokenValidity(0);
+        user.setResetToken(null);
+        user.setResetTokenValidity(0L);
 
-        this.userDAO.merge(usr);
+        this.userDAO.merge(user);
     }
 
     private void requireStringNotEmpty(String value) {

@@ -90,7 +90,7 @@ public class User implements AdminVerifiable, Serializable {
     private String resetToken;
 
     @Column(name = "resetTokenValidity")
-    private long resetTokenValidity;
+    private Long resetTokenValidity;
 
     public void addCourseRelation(CourseRelation relation) {
         relation.setUser(this);
