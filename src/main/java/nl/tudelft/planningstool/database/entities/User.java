@@ -86,6 +86,12 @@ public class User implements AdminVerifiable, Serializable {
     @Column(name = "adminStatus")
     private AdminStatus adminStatus = AdminStatus.USER;
 
+    @Column(name = "resetToken")
+    private String resetToken;
+
+    @Column(name = "resetTokenValidity")
+    private long resetTokenValidity;
+
     public void addCourseRelation(CourseRelation relation) {
         relation.setUser(this);
         this.getCourses().add(relation);

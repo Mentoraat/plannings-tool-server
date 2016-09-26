@@ -9,6 +9,7 @@ import nl.tudelft.planningstool.api.security.NotAUserException;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
+import org.jboss.resteasy.annotations.Form;
 
 import javax.ws.rs.*;
 
@@ -90,6 +91,38 @@ public class AuthenticationAPI extends ResponseAPI{
         }
 
         return this.authenticateUser(registration);
+    }
+
+    @POST
+    @Path("/resetpassword")
+    public void resetPassword(@FormParam("username") String usrName) {
+        User usr = this.userDAO.getFromUsername(usrName);
+        String token = new BigInteger(130, new SecureRandom()).toString(32);
+
+        usr.setResetToken(token);
+        // Set validity for 24 hours from now.
+        usr.setResetTokenValidity(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
+
+        // TODO Mail user with a tokenized link
+        this.userDAO.merge(usr);
+    }
+
+    @POST
+    @Path("/resetpassword/{resetToken: .+}")
+    public void setNewPassword(@FormParam("username") String usrName, @FormParam("newpassword") String newPassword, @PathParam("resetToken") String providedResetToken) throws NoSuchAlgorithmException {
+        User usr = this.userDAO.getFromUsername(usrName);
+
+        if (usr.getResetToken() == null || usr.getResetTokenValidity() < System.currentTimeMillis() || usr.getResetToken().equals(providedResetToken) ) {
+            throw new IllegalArgumentException("illegal reset token provided");
+        }
+
+        usr.setHashedPassword(this.hashPassword(newPassword));
+
+        // Deauthorize reset token
+        usr.setResetToken(null);
+        usr.setResetTokenValidity(0);
+
+        this.userDAO.merge(usr);
     }
 
     private void requireStringNotEmpty(String value) {
