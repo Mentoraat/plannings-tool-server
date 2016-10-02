@@ -108,6 +108,16 @@ public class UserAssignmentAPI extends ResponseAPI {
                 .filter(a -> !alreadyPlannedAssignments.contains(a))
                 .forEach(a -> unplanned.addAndGet(a.getLength()));
 
+        long currentTime = System.currentTimeMillis();
+        c.getOccurrences().forEach(o -> {
+            long length = TimeUnit.MILLISECONDS.toHours(o.getEnd_time() - o.getStart_time());
+            if (o.getEnd_time() < currentTime) {
+                finished.addAndGet(length);
+            } else {
+                planned.addAndGet(length);
+            }
+        });
+
         return new double[] {finished.get(), planned.get(), unplanned.get()};
     }
 
