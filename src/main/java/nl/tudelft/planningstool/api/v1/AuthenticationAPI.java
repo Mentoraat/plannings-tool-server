@@ -2,21 +2,19 @@ package nl.tudelft.planningstool.api.v1;
 
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.Credentials;
 import nl.tudelft.planningstool.api.parameters.Registration;
 import nl.tudelft.planningstool.api.parameters.ResetPasswordForm;
 import nl.tudelft.planningstool.api.responses.TokenResponse;
 import nl.tudelft.planningstool.api.security.NotAUserException;
+import nl.tudelft.planningstool.api.v1.services.UserService;
 import nl.tudelft.planningstool.database.DbModule;
 import nl.tudelft.planningstool.database.controllers.UserDAO;
 import nl.tudelft.planningstool.database.entities.User;
 import nl.tudelft.planningstool.database.entities.courses.CourseRelation;
-import org.jboss.resteasy.annotations.Form;
 
 import javax.mail.Message;
-import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.MimeMessage;
@@ -32,7 +30,6 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.Random;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Provides Authentication API endpoints.
@@ -44,6 +41,9 @@ public class AuthenticationAPI extends ResponseAPI{
     @Inject
     protected UserDAO userDAO;
 
+    @Inject
+    private UserService userService;
+
     @POST
     public TokenResponse authenticateUser(Credentials credentials) {
         String username = credentials.getUsername();
@@ -52,6 +52,8 @@ public class AuthenticationAPI extends ResponseAPI{
         // Authenticate the user, issue a token and return a response
         try {
             User user = authenticate(username, password);
+
+            this.userService.removeWeekOldEvents(user);
 
             return issueToken(user);
         }
