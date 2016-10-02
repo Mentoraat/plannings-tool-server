@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import nl.tudelft.planningstool.api.parameters.Credentials;
 import nl.tudelft.planningstool.api.parameters.Registration;
+import nl.tudelft.planningstool.api.parameters.ResetPasswordForm;
 import nl.tudelft.planningstool.api.responses.TokenResponse;
 import nl.tudelft.planningstool.api.security.NotAUserException;
 import nl.tudelft.planningstool.database.DbModule;
@@ -105,16 +106,10 @@ public class AuthenticationAPI extends ResponseAPI{
         return this.authenticateUser(registration);
     }
 
-    @Data
-    private class ResetPasswordForm {
-        String userName;
-        String email;
-    }
-
     @POST
     @Path("/resetpassword")
     public void resetPassword(ResetPasswordForm passwordForm) {
-        User user = this.userDAO.getFromUsername(passwordForm.getUserName());
+        User user = this.userDAO.getFromUsername(passwordForm.getUsername());
 
         if (!user.getEmail().equals(passwordForm.getEmail())) {
             throw new IllegalArgumentException("Invalid combination of username and email address");
@@ -138,8 +133,9 @@ public class AuthenticationAPI extends ResponseAPI{
             msg.setSentDate(new Date());
             msg.setText("Dear " + user.getName() + ",\n\nYour reset token is " + token + "\n\nRegards,\nPlanningstool admins");
             Transport.send(msg, props.getProperty("user"), props.getProperty("password"));
-        } catch (MessagingException | IOException mex) {
+        } catch (Exception mex) {
             log.error("send failed, exception: " + mex);
+            throw new IllegalArgumentException("Something went wrong. Please try again later.");
         }
     }
 
