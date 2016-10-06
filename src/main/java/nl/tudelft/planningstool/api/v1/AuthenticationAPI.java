@@ -118,7 +118,6 @@ public class AuthenticationAPI extends ResponseAPI{
         }
 
         String token = new BigInteger(130, new SecureRandom()).toString(32);
-        System.out.println(token);
         user.setResetToken(token);
         // Set validity for 24 hours from now.
         user.setResetTokenValidity(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
