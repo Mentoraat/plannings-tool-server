@@ -132,7 +132,7 @@ public class AuthenticationAPI extends ResponseAPI{
             msg.setRecipients(Message.RecipientType.TO, user.getEmail());
             msg.setSubject("Planningstool password reset token");
             msg.setSentDate(new Date());
-            msg.setText("Dear " + user.getName() + ",\n\nYou can reset your password via <a href=\"https://planningstool.ewi.tudelft.nl/forgot-password-reset/?token=" + token + "\">https://planningstool.ewi.tudelft.nl/forgot-password-reset/?token=" + token + "</a>\n\nRegards,\nPlanningstool admins", "text/html");
+            msg.setContent("Dear " + user.getName() + ",<br><br>You can reset your password via <a href=\"https://planningstool.ewi.tudelft.nl/forgot-password-reset?token=" + token + "\">https://planningstool.ewi.tudelft.nl/forgot-password-reset?token=" + token + "</a><br><br>Regards,<br>Planningstool admins", "text/html; charset=utf-8");
             Transport.send(msg, props.getProperty("user"), props.getProperty("password"));
         } catch (Exception mex) {
             log.error("send failed, exception: " + mex);
