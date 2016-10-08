@@ -118,7 +118,6 @@ public class AuthenticationAPI extends ResponseAPI{
         }
 
         String token = new BigInteger(130, new SecureRandom()).toString(32);
-
         user.setResetToken(token);
         // Set validity for 24 hours from now.
         user.setResetTokenValidity(System.currentTimeMillis() + 24 * 60 * 60 * 1000);
@@ -133,7 +132,7 @@ public class AuthenticationAPI extends ResponseAPI{
             msg.setRecipients(Message.RecipientType.TO, user.getEmail());
             msg.setSubject("Planningstool password reset token");
             msg.setSentDate(new Date());
-            msg.setText("Dear " + user.getName() + ",\n\nYour reset token is " + token + "\n\nRegards,\nPlanningstool admins");
+            msg.setContent("Dear " + user.getName() + ",<br><br>You can reset your password via <a href=\"https://planningstool.ewi.tudelft.nl/forgot-password-reset?token=" + token + "\">https://planningstool.ewi.tudelft.nl/forgot-password-reset?token=" + token + "</a><br><br>Regards,<br>Planningstool admins", "text/html; charset=utf-8");
             Transport.send(msg, props.getProperty("user"), props.getProperty("password"));
         } catch (Exception mex) {
             log.error("send failed, exception: " + mex);
@@ -154,13 +153,14 @@ public class AuthenticationAPI extends ResponseAPI{
     @Path("/resetpassword/{resetToken: .+}")
     public void setNewPassword(Credentials credentials, @PathParam("resetToken") String providedResetToken) throws NoSuchAlgorithmException {
         User user = this.userDAO.getFromUsername(credentials.getUsername());
-
-        if (user.getResetToken() == null || user.getResetTokenValidity() < System.currentTimeMillis() || user.getResetToken().equals(providedResetToken) ) {
+        if (user.getResetToken() == null || user.getResetTokenValidity() < System.currentTimeMillis() || !user.getResetToken().equals(providedResetToken) ) {
+            // Deauthorize reset token
+            user.setResetToken(null);
+            user.setResetTokenValidity(0L);
             throw new IllegalArgumentException("illegal reset token provided");
         }
 
         user.setHashedPassword(this.hashPassword(credentials.getPassword()));
-
         // Deauthorize reset token
         user.setResetToken(null);
         user.setResetTokenValidity(0L);
