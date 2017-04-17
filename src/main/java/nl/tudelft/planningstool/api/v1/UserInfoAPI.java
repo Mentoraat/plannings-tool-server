@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @Path("v1/users/USER-{userId: .+}")
 public class UserInfoAPI extends ResponseAPI {
 
+    private static final String DEFAULT_COLOR = "#3a87ad";
     private static final List<String> COLORS = Lists.newArrayList("#ff6447", "#5441b0", "#708090");
 
     @GET
@@ -44,7 +45,8 @@ public class UserInfoAPI extends ResponseAPI {
 
         for (CourseEditionResponse r : map.keySet()) {
             if (i == COLORS.size()) {
-                break;
+                map.put(r, DEFAULT_COLOR);
+                continue;
             }
 
             map.put(r, COLORS.get(i));
